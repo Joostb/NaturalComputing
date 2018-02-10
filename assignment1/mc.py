@@ -1,5 +1,4 @@
 
-import numpy as np
 import random
 from typing import Callable
 
@@ -26,10 +25,10 @@ def mc(fitness_function : Callable[[int], int], n : int, iterations : int) -> (i
         
     return best_individual, best_fitness
 
-
-print(mc(count_ones, 10, 1500))
-print("running the algorithm 1500 * 10 times")
-print("best individual fount: 0 times")
+if __name__ == "__main__":
+    print(mc(count_ones, 10, 1500))
+    print("running the algorithm 1500 * 10 times")
+    print("best individual fount: 0 times")
 
 #  the chance to not find the best individual in 1500 runs is:
 # 0.999999999999999999999999998816708642168482291882407152775...
