@@ -1,0 +1,71 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\title{Natural Computing}
+\author{Pauline, Dennis, Joost}
+\begin{document}
+	\maketitle
+	
+	\section{Answers}
+	
+	\subsection*{1}
+	Due to no eliteness, we can treat the best member as any other member in the pool.
+	
+	\begin{enumerate}[label=\alph*)]
+		\item There are 100 individuals, with a mean of 76. That means that the total size of the roulette wheel will be 7600. The current best member has a fitness of 157, so it will occupy $\frac{157}{7600}$th of the roulette wheel. This means that it has roughly a $2\%$ chance of being selected. If we select 100 members, we expect to select the best member $\frac{157}{7600} * 100 \approx 2 $ times.
+		
+		\item The chance that we don't select the fittest member is $1 - \frac{157}{7600}$. So the chance that we never select it is $\left(1 - \frac{157}{7600}\right)^100 \approx 0.124$.
+	\end{enumerate}
+
+	\subsection*{2}
+	
+	The fitness function is \[ f(x) = x^2. \]
+	
+	The members of the pool are $x=3, x=5, \text{and} x=7$. So the total fitness is $3^2 + 5^2 + 7^2 = 83$. The chance to select each individual is: 
+	\begin{itemize}
+		\item[$x=3:$] $9/83 \approx 0.108$,
+		
+		\item[$x=5:$] $25/83 \approx 0.301$,
+		
+		\item[$x=5:$] $49/83 \approx 0.590$.
+		 
+	\end{itemize}
+
+	When using the alternative selection function 
+	\[
+		f_1(x) = x^2 + 8,
+	\] 
+	
+	the total fitness is $83 + 24 = 107$ and
+	we obtain the following results: 
+	
+		\begin{itemize}
+		\item[$x=3:$] $17/107 \approx 0.159$,
+		
+		\item[$x=5:$] $33/107 \approx 0.308$,
+		
+		\item[$x=5:$] $57/107 \approx 0.533$.
+		
+	\end{itemize}
+
+We can see that the second function yields a lower selection pressure. This is because the relative boost of 8 is much higher for the less fit individuals. It almost doubles the fitness of the $x=3$ individual, and only amounts to a $0.16$-th increase in fitness of the $x=7$ individual.
+
+\section*{3}
+
+TODO: implement a the monte carlo algorithm for counting zeros.
+
+\section*{4}
+
+Implement the 'simple (1+1)-GA for binary problems. and compare it to the monte carlo solution 
+
+\section*{5}
+Something weird with symbolic expressions. (theory)
+
+\section*{6}
+Something weird with symbolic expressions (programming)
+
+\end{document}
