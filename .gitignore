@@ -1,7 +1,13 @@
+# .gitignore IDE
+**/.idea/
+**/__pycache__/
+.vscode/
+
 # latex
 *.aux
 *.synctex.gz
 *.log
+*.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
