@@ -3,6 +3,7 @@ import math
 from deap import algorithms, base, creator, tools, gp
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 dep_var = np.arange(-1, 1.1, 0.1)
 output = np.array(
@@ -46,6 +47,7 @@ def protected_exp(x):
         return 9999999999999999
 
 
+
 # Define primitives
 primitives = gp.PrimitiveSet(name="MAIN", arity=1)
 primitives.addPrimitive(operator.add, arity=2)
@@ -79,34 +81,51 @@ toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max
 
 
 if __name__ == "__main__":
-    pop = toolbox.population(n=1000)
-    hof = tools.HallOfFame(1)
+    best_fitness = -1
+    while best_fitness < -0.0000001:
 
-    stats_fit = tools.Statistics(lambda ind: ind.fitness.values)
-    stats_size = tools.Statistics(len)
-    mstats = tools.MultiStatistics(fitness=stats_fit, size=stats_size)
-    mstats.register("avg", np.mean)
-    mstats.register("std", np.std)
-    mstats.register("min", np.min)
-    mstats.register("max", np.max)
+        pop = toolbox.population(n=1000)
+        hof = tools.HallOfFame(1)
 
-    # cxpb prob of mating
-    # mutpb prob of mutation, i.e. crossover
-    # ngen number of generations
-    pop, log = algorithms.eaSimple(pop, toolbox, cxpb=0.7, mutpb=0, ngen=50, stats=mstats,
-                                   halloffame=hof, verbose=True)
+        tools.Statistics()
+        stats_fit = tools.Statistics(lambda ind: ind.fitness.values)
+        
+        stats_size = tools.Statistics(len)
+        mstats = tools.MultiStatistics(fitness=stats_fit, size=stats_size)
+        mstats.register("avg", np.mean)
+        mstats.register("std", np.std)
+        mstats.register("min", np.min)
+        mstats.register("max", np.max)
 
-    best_indivs_fitness = []
-    for gen in log.chapters['fitness']:
-        best_indivs_fitness.append(gen['max'])
+        # cxpb prob of mating
+        # mutpb prob of mutation, i.e. crossover
+        # ngen number of generations
+        population = []
+        log = []
+        best_indivs_fitness = []
+        best_indivs_size = []
 
-    best_indivs_size = []
-    for gen in log.chapters['size']:
-        best_indivs_size.append(gen['min'])
+        for i in tqdm(range(50)):
+            pop, lg = algorithms.eaSimple(pop, toolbox, cxpb=0.7, mutpb=0, ngen=1, stats=mstats,
+                                        halloffame=hof, verbose=False)
 
-    gen_size = []
-    for gen in log:
-        gen_size.append(gen['nevals'])
+            best_indivs_fitness.append(hof[0].fitness.values )
+            best_indivs_size.append(len(hof[0]))
+        best_fitness = hof[0].fitness.values[0]
+        print(hof[0].fitness)
+
+    # print(log.chapters)
+    # best_indivs_fitness = []
+    # for gen in log.chapters['fitness']:
+    #     best_indivs_fitness.append(gen['max'])
+
+    # best_indivs_size = []
+    # for gen in log.chapters['size']:
+    #     best_indivs_size.append(gen['min'])
+
+    # gen_size = []
+    # for gen in log:
+    #     gen_size.append(gen['nevals'])
 
     plt.plot(best_indivs_fitness)
     plt.xlabel("Generation")
@@ -118,9 +137,9 @@ if __name__ == "__main__":
     plt.ylabel("Smallest Size")
     plt.show()
 
-    plt.plot(gen_size)
-    plt.xlabel("Generation")
-    plt.ylabel("Generation Size")
-    plt.show()
+    # plt.plot(gen_size)
+    # plt.xlabel("Generation")
+    # plt.ylabel("Generation Size")
+    # plt.show()
 
     print("The best individual was: ", str(hof[0]))
