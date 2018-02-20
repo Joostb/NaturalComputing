@@ -47,7 +47,6 @@ def protected_exp(x):
         return 9999999999999999
 
 
-
 # Define primitives
 primitives = gp.PrimitiveSet(name="MAIN", arity=1)
 primitives.addPrimitive(operator.add, arity=2)
@@ -82,6 +81,7 @@ toolbox.decorate("mutate", gp.staticLimit(key=operator.attrgetter("height"), max
 
 if __name__ == "__main__":
     best_fitness = -1
+    ngen = 50
     while best_fitness < -0.0000001:
 
         pop = toolbox.population(n=1000)
@@ -97,35 +97,24 @@ if __name__ == "__main__":
         mstats.register("min", np.min)
         mstats.register("max", np.max)
 
-        # cxpb prob of mating
-        # mutpb prob of mutation, i.e. crossover
-        # ngen number of generations
         population = []
         log = []
         best_indivs_fitness = []
         best_indivs_size = []
 
-        for i in tqdm(range(50)):
+        for iteration in tqdm(range(ngen)):
+            # cxpb prob of mating, i.e. crossover
+            # mutpb prob of mutation
+            # ngen number of generations
             pop, lg = algorithms.eaSimple(pop, toolbox, cxpb=0.7, mutpb=0, ngen=1, stats=mstats,
-                                        halloffame=hof, verbose=False)
+                                          halloffame=hof, verbose=False)
 
-            best_indivs_fitness.append(hof[0].fitness.values )
+            best_indivs_fitness.append(hof[0].fitness.values)
             best_indivs_size.append(len(hof[0]))
         best_fitness = hof[0].fitness.values[0]
-        print(hof[0].fitness)
-
-    # print(log.chapters)
-    # best_indivs_fitness = []
-    # for gen in log.chapters['fitness']:
-    #     best_indivs_fitness.append(gen['max'])
-
-    # best_indivs_size = []
-    # for gen in log.chapters['size']:
-    #     best_indivs_size.append(gen['min'])
-
-    # gen_size = []
-    # for gen in log:
-    #     gen_size.append(gen['nevals'])
+        tqdm.write("{}".format(hof[0].fitness))
+        # Uncomment for doing just one epoch
+        # break
 
     plt.plot(best_indivs_fitness)
     plt.xlabel("Generation")
@@ -136,10 +125,5 @@ if __name__ == "__main__":
     plt.xlabel("Generation")
     plt.ylabel("Smallest Size")
     plt.show()
-
-    # plt.plot(gen_size)
-    # plt.xlabel("Generation")
-    # plt.ylabel("Generation Size")
-    # plt.show()
 
     print("The best individual was: ", str(hof[0]))
