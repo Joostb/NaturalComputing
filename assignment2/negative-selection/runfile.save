@@ -1,0 +1,4 @@
+#!bash
+
+java -jar negsel2.jar -self english.train -n 10 -r 4 -c -l < english.test | awk ’{n+=$1}END{print n/NR}’
+java -jar negsel2.jar -self english.train -n 10 -r 4 -c -l < tagalog.test | awk ’{n+=$1}END{print n/NR}’u

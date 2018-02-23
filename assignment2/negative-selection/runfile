@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# outt = tagalog.results
+# oute = english.results
+
+
+
+for i in {1..4}
+do
+	java -jar negsel2.jar -self english.train -n 10 -r 4 -c -l < english.test | awk '{n+=$1}END{print n/NR}' # > $oute
+
+	java -jar negsel2.jar -self english.train -n 10 -r 4 -c -l < tagalog.test | awk '{n+=$1}END{print n/NR}' # > $outt
+
+done
