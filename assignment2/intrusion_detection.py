@@ -69,9 +69,13 @@ def plot_ROC(Rs, names):
 ###########################
 # Functions for exercises #
 def main():
-    df = get_dataframe("results/ex_2/snd-cert_1_n7r7.out", "negative-selection/syscalls/snd-cert/snd-cert.1.labels")
-    Rs = [compute_TPR_FPR(df)]
-    plot_ROC(Rs, ["snd-cert.1"])
+
+    #parameters n = 7 and r = 4
+    paths = [["results/ex_2/snd-cert_1_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.1.labels"], ["results/ex_2/snd-cert_2_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.2.labels"], ["results/ex_2/snd-cert_3_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.3.labels"], ["results/ex_2/snd-unm_1_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.1.labels"], ["results/ex_2/snd-unm_2_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.2.labels"], ["results/ex_2/snd-unm_3_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.3.labels"]]
+    names = ["snd-unm_n7r4.1", "snd_unm_n7r4.2", "snd_unm_n7r4.3", "snd-unm_n7r4.1", "snd_unm_n7r4.2", "snd_unm_n7r4.3"]
+    dfs = [get_dataframe(snd_cert_path, snd_label_path) for snd_cert_path, snd_label_path in paths]
+    Rs = [compute_TPR_FPR(df) for df in dfs]
+    plot_ROC(Rs, names)
 
 
 if __name__ == "__main__":
