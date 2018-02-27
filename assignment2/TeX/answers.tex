@@ -11,9 +11,10 @@
 \usepackage{multicol}
 \usepackage{hyperref}
 \epstopdfsetup{outdir=./images/}
+\usepackage{subcaption}
 
 \title{Natural Computing, Assignment 2}
-\author{Pauline Lauron - s1016609 \and Dennis Verheijden - s4455770 \and Joost Besseling - s4796799}
+\author{Dennis Verheijden - s4455770 \and Pauline Lauron - s1016609 \and Joost Besseling - s4796799}
 \begin{document}
 \maketitle
 
@@ -21,7 +22,7 @@
 \begin{enumerate}[1.]
 \item The ROC curve for the parameters $n=10, r=4$ may be observed in figure \ref{fig:ROC_ex1} as the orange line. The corresponding AUC is 0.7835, which is actually pretty good. The algorithm definitely learned whether the language is English or not.
 
-\item The ROC curves for the parameters $r=1$ and $r=9$ are shown in figure \ref{fig:ROC_ex1} as respectively the green and blue line. Changing the length of the substrings ($r$), we can see some interesting results. If the length is 9, the ROC curve is basically chance. If the length is 1, the TPR and FPR values are almost constant since it just cannot distinguish anything.
+\item The ROC curves for the parameters $r=1$ and $r=9$ are shown in figure \ref{fig:ROC_ex1} as respectively the green and blue line. Changing the length of the substrings ($r$), we can see some interesting results. If the length is 9, the anomaly scores were constant, so the accuracy, as may be seen the figure, are bad. If the length is 1, it cannot distinguish anything because it has to judge the language given 1 character. This is reflected in the figure, as the ROC curve reflects the baseline, which just guesses.
 
 \begin{figure}[H]
 \centering
@@ -45,11 +46,32 @@ I was actually suprised that all of the languages, exception being Middle-Englis
 
 \end{enumerate}
 
+\newpage
 
 \section{Intrusion Detection for Unix Processes}
-\begin{itemize}
-\item Detect anomalous sequences in the system calls datasets.
-\item Do AUC analysis
-\end{itemize}
+In this exercise we used the negative-selection algorithm to detect anomalous system call sequences. For this we had to change the command with which we call the function to include the new alphabet and point it to the correct files.
 
+When inspecting our training- and test-files, we noticed that there were some sequences that have less than 10 characters. To accommodate for this (such that the algorithm does not produce \textit{NaN} values, we changed the $n$ to the minimal length, which was 7.
+
+After processing the dataset, such that we got the same format as in exercise 1, we ran the algorithm. The resulting anomaly scores were averaged over one instance. We ran the algorithm for two different \textit{syscalls}: \textit{snd-cert} (figure \ref{fig:ROC_ex2_1}) and \textit{snd-unm} (figure \ref{fig:ROC_ex2_2}).
+
+After doing some AUC analysis on these results and tweaking with parameters, we found that the parameter setup $n=7, r=4$ worked best. For both syscalls, the algorithm have a fairly high TPR right off the bat. For \textit{snd-cert} we do not see any significant differences, their AUCs are also the same. Where in \textit{snd-unm} we see some differences: \textit{snd-unm.1} is classified worse than \textit{snd-unm.2} or \textit{snd-unm.3}. This may be due to that the test file being so small.
+
+Overall we can say that the algorithm performs pretty well for this dataset, as it has a high TPR while maintaining a low FPR.
+
+
+\begin{figure}[H]
+\centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{images/roc_ex2_1.eps}
+        \caption{\textit{snd-cert}}
+        \label{fig:ROC_ex2_1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{images/roc_ex2_2.eps}
+        \caption{\textit{snd-unm}}
+        \label{fig:ROC_ex2_2}
+    \end{subfigure}
+    \caption{ROC curves for discriminating between genuine and anomalous system calls.}
+\end{figure}
 \end{document}

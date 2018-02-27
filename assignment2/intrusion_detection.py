@@ -46,37 +46,44 @@ def compute_TPR_FPR(df):
 
     for value_l in tqdm(df.values):
         value = value_l[0]
-        TPR.append(sum((df['values'] > value) & (df['label'] == 0)) / sum(df['label'] == 0))
+        TPR.append(sum((df['values'] < value) & (df['label'] == 0)) / sum(df['label'] == 0))
 
-        FPR.append(sum((df['values'] > value) & (df['label'] == 1)) / sum(df['label'] == 1))
+        FPR.append(sum((df['values'] < value) & (df['label'] == 1)) / sum(df['label'] == 1))
 
     return [TPR, FPR]
 
 
 def plot_ROC(Rs, names):
     for i, (TPR, FPR) in enumerate(Rs):
-        plt.plot(TPR, FPR, label=names[i])
-        plt.text(0.6, 0.62 - 0.075*(i+1), "AUC {}: {:.4f}".format(names[i], auc(TPR, FPR)))
+        plt.plot(FPR, TPR, label=names[i])
+        plt.text(0.6, 0.5 - 0.075*(i+1), "AUC {}: {:.4f}".format(names[i], auc(FPR, TPR)))
 
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
     plt.title("ROC Curve")
-    plt.plot(np.linspace(0, 1, len(TPR)), np.linspace(0, 1, len(TPR)), '--', label="Baseline")
+    plt.plot(np.linspace(0, max(FPR), len(FPR)), np.linspace(0, 1, len(TPR)), '--', label="Baseline")
     plt.legend()
     plt.show()
 
 
 ###########################
 # Functions for exercises #
-def main():
-
-    #parameters n = 7 and r = 4
-    paths = [["results/ex_2/snd-cert_1_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.1.labels"], ["results/ex_2/snd-cert_2_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.2.labels"], ["results/ex_2/snd-cert_3_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.3.labels"], ["results/ex_2/snd-unm_1_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.1.labels"], ["results/ex_2/snd-unm_2_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.2.labels"], ["results/ex_2/snd-unm_3_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.3.labels"]]
-    names = ["snd-unm_n7r4.1", "snd_unm_n7r4.2", "snd_unm_n7r4.3", "snd-unm_n7r4.1", "snd_unm_n7r4.2", "snd_unm_n7r4.3"]
+def do_it_all(paths, names):
     dfs = [get_dataframe(snd_cert_path, snd_label_path) for snd_cert_path, snd_label_path in paths]
     Rs = [compute_TPR_FPR(df) for df in dfs]
     plot_ROC(Rs, names)
 
 
 if __name__ == "__main__":
-    main()
+    paths = [["results/ex_2/snd-cert_1_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.1.labels"],
+             ["results/ex_2/snd-cert_2_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.2.labels"],
+             ["results/ex_2/snd-cert_3_n7r4.out", "negative-selection/syscalls/snd-cert/snd-cert.3.labels"]]
+    names = ["snd-cert.1", "snd_cert.2", "snd_cert.3"]
+    do_it_all(paths, names)
+
+    paths = [["results/ex_2/snd-unm_1_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.1.labels"],
+             ["results/ex_2/snd-unm_2_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.2.labels"],
+             ["results/ex_2/snd-unm_3_n7r4.out", "negative-selection/syscalls/snd-unm/snd-unm.3.labels"]]
+    names = ["snd-unm.1", "snd_unm.2", "snd_unm.3"]
+    do_it_all(paths, names)
+

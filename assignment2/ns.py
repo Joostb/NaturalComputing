@@ -41,17 +41,17 @@ def compute_TPR_FPR(df):
 
     for value_l in tqdm(df.values):
         value = value_l[0]
-        TPR.append(sum((df['values'] > value) & (df['label'] == 'english')) / sum(df['label'] == 'english'))
+        TPR.append(sum((df['values'] < value) & (df['label'] == 'english')) / sum(df['label'] == 'english'))
 
-        FPR.append(sum((df['values'] > value) & (df['label'] == 'otherlang')) / sum(df['label'] == 'otherlang'))
+        FPR.append(sum((df['values'] < value) & (df['label'] == 'otherlang')) / sum(df['label'] == 'otherlang'))
 
     return [TPR, FPR]
 
 
 def plot_ROC(Rs, names):
     for i, (TPR, FPR) in enumerate(Rs):
-        plt.plot(TPR, FPR, label=names[i])
-        plt.text(0.6, 0.62 - 0.075*(i+1), "AUC {}: {:.4f}".format(names[i], auc(TPR, FPR)))
+        plt.plot(FPR, TPR, label=names[i])
+        plt.text(0.6, 0.62 - 0.075*(i+1), "AUC {}: {:.4f}".format(names[i], auc(FPR, TPR)))
 
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
@@ -89,5 +89,5 @@ def exercise_1_3():
 
 
 if __name__ == "__main__":
-    # exercise_1_1_and_1_2()
+    exercise_1_1_and_1_2()
     exercise_1_3()
