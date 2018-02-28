@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+\epstopdfsetup{outdir=./images/}
+\usepackage{subcaption}
+
+\title{Natural Computing, Assignment 3}
+\author{Dennis Verheijden - s4455770 \and Pauline Lauron - s1016609 \and Joost Besseling - s4796799}
+\begin{document}
+\maketitle
+
+\section{}
+\begin{enumerate}[(a)]
+\item Updating is done by:
+\begin{align}
+x(i;d)^{t+1} &= x(i,d)^t + v(i;d) \\
+x(i)^{t+1} &= (x(i,0)^t + v(i,0), \quad x(i,1)^t + v(i,1)) 
+\end{align}
+So the next position of the particles after one iteration of the PSO algorithm with $w=2, r_1 = r_2 = 0.5$ are:
+\begin{align*}
+v(1,0) &= 2 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5) = 4 \\
+v(1,1) &= 2 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5) = 4 \\
+x(1)^1 &= (5 + 4, \quad 5 + 4) = (9, 9) \\ \\
+x(2)^1 &= (8 + (2 \times 3 + 0.5 \times (7 - 8) + 0.5 \times (5 - 8)), \\
+ &\qquad   3 + (2 \times 3 + 0.5 \times (3 - 3) + 0.5 \times (5 - 3))) \\
+       &= (8 + 4, \quad 3 + 7) = (12, 10) \\ \\
+x(3)^1 &= (6 + (2 \times 3 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
+ &\qquad   7 + (2 \times 3 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
+       &= (6 + 5, \quad 7 + 4.5) = (11, 11.5)
+\end{align*}
+
+\item The next position of the particles after one iteration of the PSO algorithm with $w=0.1, r_1 = r_2 = 0.5$ are:
+\begin{align*}
+x(1)^1 &= (5 + (0.1 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5)), \\
+ &\qquad   3 + (0.1 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5))) \\
+       &= (5 + 0.2, \quad 5 + 0.2) = (5.2, 5.2) \\ \\
+x(2)^1 &= (8 + (0.1 \times 3 + 0.5 \times (7 - 8) + 0.5 \times (5 - 8)), \\
+ &\qquad   3 + (0.1 \times 3 + 0.5 \times (3 - 3) + 0.5 \times (5 - 3))) \\
+       &= (8 - 1.7, \quad 3 + 1.3) = (6.3, 4.3) \\ \\
+x(3)^1 &= (6 + (0.1 \times 3 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
+ &\qquad   7 + (0.1 \times 3 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
+       &= (6 - 0.7 , \quad 7 - 1.2) = (5.3, 5.8)
+\end{align*}
+
+\item The effect of $w$ is the importance of the velocity of the particle for updating. Setting this value lower (in proportion to $r_1$ and $r_2$) decreases the effect of the particle and increases the effect of the particle best and the social best. This effectively makes the particle more inclined to move towards the social and its personal best.
+
+\item The advantage of a high value of $w$ is that the impact of individual particles is larger, such that they maintain the same velocity and direction. The disadvantage is that the effect of the swarm becomes less significant.
+\end{enumerate}
+
+\section{}
+If the swarm would only consist of a single member and $w < 1$, it wouldn't perform very well. 
+
+Say the initial velocity and position are positive. Then the personal influence would be zero (personal best would equal current position) and the social influence would also be zero (the particle is the population). The initial iteration would thus result in a positive update, moving away from the global and local optima. 
+
+After the first iteration, assuming $r_1 > w$, there will be a negative update, since the personal influence becomes negative and is bigger than the inertia influence.
+
+\textbf{NOT SURE WHAT HAPPENS NEXT, NEED TO THINK MORE ABOUT THIS. IT MIGHT START OSCILLATING BETWEEN SUBOPTIMAL VALUES.}
+
+\end{document}
