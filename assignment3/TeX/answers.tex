@@ -29,13 +29,13 @@ So the next position of the particles after one iteration of the PSO algorithm w
 \begin{align*}
 v(1,0) &= 2 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5) = 4 \\
 v(1,1) &= 2 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5) = 4 \\
-x(1)^1 &= (5 + 4, \quad 5 + 4) = (9, 9) \\ \\
+x(1)^1 &= (5 + 4, \quad 5 + 4) = (9, 9) \\ \\6
 x(2)^1 &= (8 + (2 \times 3 + 0.5 \times (7 - 8) + 0.5 \times (5 - 8)), \\
  &\qquad   3 + (2 \times 3 + 0.5 \times (3 - 3) + 0.5 \times (5 - 3))) \\
        &= (8 + 4, \quad 3 + 7) = (12, 10) \\ \\
-x(3)^1 &= (6 + (2 \times 3 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
- &\qquad   7 + (2 \times 3 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
-       &= (6 + 5, \quad 7 + 4.5) = (11, 11.5)
+x(3)^1 &= (6 + (2 \times 4 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
+ &\qquad   7 + (2 \times 4 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
+       &= (6 + 7, \quad 7 + 6.5) = (13, 13.5)
 \end{align*}
 
 \item The next position of the particles after one iteration of the PSO algorithm with $w=0.1, r_1 = r_2 = 0.5$ are:
@@ -46,9 +46,9 @@ x(1)^1 &= (5 + (0.1 \times 2 + 0.5 \times (5 - 5) + 0.5 \times (5 - 5)), \\
 x(2)^1 &= (8 + (0.1 \times 3 + 0.5 \times (7 - 8) + 0.5 \times (5 - 8)), \\
  &\qquad   3 + (0.1 \times 3 + 0.5 \times (3 - 3) + 0.5 \times (5 - 3))) \\
        &= (8 - 1.7, \quad 3 + 1.3) = (6.3, 4.3) \\ \\
-x(3)^1 &= (6 + (0.1 \times 3 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
- &\qquad   7 + (0.1 \times 3 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
-       &= (6 - 0.7 , \quad 7 - 1.2) = (5.3, 5.8)
+x(3)^1 &= (6 + (0.1 \times 4 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
+ &\qquad   7 + (0.1 \times 4 + 0.5 \times (6 - 7) + 0.5 \times (5 - 7))) \\
+       &= (6 - 0.6 , \quad 7 - 1.1) = (5.4, 5.9)
 \end{align*}
 
 \item The effect of $w$ is the importance of the velocity of the particle for updating. Setting this value lower (in proportion to $r_1$ and $r_2$) decreases the effect of the particle and increases the effect of the particle best and the social best. This effectively makes the particle more inclined to move towards the social and its personal best.
@@ -57,12 +57,13 @@ x(3)^1 &= (6 + (0.1 \times 3 + 0.5 \times (5 - 6) + 0.5 \times (5 - 6)), \\
 \end{enumerate}
 
 \section{}
+% NOTE: MIGHT BE WRONG, MORE THINKING NEEDED
 If the swarm would only consist of a single member and $w < 1$, it wouldn't perform very well. 
 
 Say the initial velocity and position are positive. Then the personal influence would be zero (personal best would equal current position) and the social influence would also be zero (the particle is the population). The initial iteration would thus result in a positive update, moving away from the global and local optima. 
 
 After the first iteration, assuming $r_1 > w$, there will be a negative update, since the personal influence becomes negative and is bigger than the inertia influence.
 
-\textbf{NOT SURE WHAT HAPPENS NEXT, NEED TO THINK MORE ABOUT THIS. IT MIGHT START OSCILLATING BETWEEN SUBOPTIMAL VALUES.}
+This would iterate for a very long time, but we think because of the last negative update, we would eventually reach (or get close to) the optimal value. This is assuming we don't draw random numbers for $r_1$.
 
 \end{document}
