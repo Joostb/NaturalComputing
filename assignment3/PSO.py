@@ -22,8 +22,9 @@ def pso(X, y, n_iter=100, n_clusters=3):
         for c, particle in enumerate(particles):
             for i, x in enumerate(X):
                 particle_distances[i, c] = particle.distance(x)
-
+    
         closest_cluster = np.argmin(particle_distances, axis=1)
+        
         cluster_fitnesses = []
         for c, particle in enumerate(particles):
             particle.assign(X[closest_cluster == c])
@@ -33,8 +34,16 @@ def pso(X, y, n_iter=100, n_clusters=3):
         global_best = bests[np.argmin([best['fitness'] for best in bests])]['best_position'].copy()
 
         for particle in particles:
+            particle.best_global = global_best
             particle.update_velocity(n_features)
             particle.update_position(n_features)
+
+    quantization_error = []
+    for particle in particles:
+        quantization_error.append(particle.fitness())
+
+    print(quantization_error)
+    return quantization_error
 
 
 def kmeans(X, y, n_iter=100, n_clusters=3):
@@ -46,7 +55,6 @@ def kmeans(X, y, n_iter=100, n_clusters=3):
     best_fitness = 0
     global_best = None
 
-    
     for iter in tqdm(range(n_iter)):
         particle_distances = np.zeros(shape=(n_samples, n_clusters))
         for c, particle in enumerate(particles):
@@ -60,17 +68,23 @@ def kmeans(X, y, n_iter=100, n_clusters=3):
         for c, particle in enumerate(particles):
             particle.position = sum(particle.datapoints)/len(particle.datapoints)      
 
+    quantization_error = []
+    for particle in particles:
+        quantization_error.append(particle.fitness())
+
+    return quantization_error
 
 
 def main():
     iris = datasets.load_iris()
     X = iris.data
-    y = iris.target
+    y = iris.target    
     n_classes = len(np.unique(y))
-    pso(X, y, n_clusters=n_classes)
-    kmeans(X,y, n_clusters=n_classes)
+    error_pso = pso(X, y, n_clusters=n_classes)
+    error_kmeans = kmeans(X,y, n_clusters=n_classes)
 
-    
+    print("error pso", sum(error_pso)/3)
+    print("error kmeans", sum(error_kmeans)/3)
 
 
 if __name__ == "__main__":

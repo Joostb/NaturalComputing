@@ -9,9 +9,10 @@ class Particle(object):
     def __init__(self, n_dim, n_clusters, x_min=0, x_max=1):
         self.n_clusters = n_clusters
         self.datapoints = []
+        self.assign_cluster = []
         self.position = [np.random.uniform(x_min[i], x_max[i]) for i in range(n_dim)]
         self.velocity = [np.random.rand() for _ in range(n_dim)]
-        self.best = self.position.copy()
+        self.best_global = self.position.copy()
         self.best_fitness = -float('inf')
         # Local best
         self.best_position = self.position.copy()
@@ -47,7 +48,6 @@ class Particle(object):
         d = np.sqrt(sum(d))
         return d
 
-
     def update_velocity(self, n_dim):
         """
         Update the velocity with using inertia and acceleration constants
@@ -61,7 +61,7 @@ class Particle(object):
             r2 = random.random()
             
             cognitive = c1*r1*(self.best_position[i] - self.position[i])
-            social = c2*r2*(self.best[i] - self.position[i])
+            social = c2*r2*(self.best_global[i] - self.position[i])
             self.velocity[i] = w*self.position[i] + cognitive + social
 
     def update_position(self, n_dim):
