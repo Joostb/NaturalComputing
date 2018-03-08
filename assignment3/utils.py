@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 
 class Particle(object):
@@ -45,3 +46,31 @@ class Particle(object):
         d = (datapoint - self.position)**2
         d = np.sqrt(sum(d))
         return d
+
+
+    def update_velocity(self, n_dim):
+        """
+        Update the velocity with using inertia and acceleration constants
+        """
+        w = 0.5
+        c1 = 2 
+        c2 = 2 
+
+        for i in range(0, n_dim):
+            r1 = random.random()
+            r2 = random.random()
+            
+            cognitive = c1*r1*(self.best_position[i] - self.position[i])
+            social = c2*r2*(self.best[i] - self.position[i])
+            self.velocity[i] = w*self.position[i] + cognitive + social
+
+    def update_position(self, n_dim):
+        for i in range(0, n_dim):
+            self.position[i] = self.position[i] + self.velocity[i]
+
+
+        
+
+
+        
+        
