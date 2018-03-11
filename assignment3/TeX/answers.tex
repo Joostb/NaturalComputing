@@ -70,6 +70,36 @@ This would iterate for a very long time, but we think because of the last negati
 \section{}
 
 \section{}
-The tabu list allows to avoid duplicate values. Without, it is possible that the ant colony make a loop between 2 nodes which can lead to an infinite algorithm. 
+
+The Tabu list  would prevent the ants from getting stuck in a loop in the bottom part of the image. There are a lot of possibilities for loops here. At many of the decision points in the bottom part, the ant will get a 50-50 or worse choice between going forward or going backward. So a lot of the routes on the bottom will be relatively long.
+
+Only an ant that randomly decides to choose the upper route, would be forced to walk to the end. This would then be the best solution that is found. 
+
+\section{}
+\textbf{Should we answer this question in the context of the image, or not?}
+
+Encouraging exploitation means following the pheromone. On the other hand, exploration is encouraged by explicitly not following the pheromone. 
+
+Let $q \in [0,1]$ be a random variable. Let $q_0$ be a parameter such that the ant randomly makes a decision if $q < q_0$, and the ant follows the pheromone trail otherwise.
+
+
+
+\section{}
+
+The fitness is the inverse of the number of collisions (where a collision means that two of the same numbers appear in the same row, column or matrix)
+
+The rows each hold permutations of the 9 numbers. 
+
+The columns and the matrices contribute to the fitness.
+
+The matrix is a stack on top of the sudoku, with for each value, the chance that is should be in that specific spot.
+
+(so layer [1] is the 9x9 matrix that denotes the probabilities of the places where the 1's should go. Layer [9] does the same, but for 9's.)
+
+We construct some solutions based on the matrices, and then update the pheromones, by increasing the chance that the best solution occurs. Alll other values fade some amount.
+
+????
+
+
 
 \end{document}
