@@ -14,8 +14,8 @@ def pso(X, y, n_iter=100, n_clusters=3):
     X_max = np.max(X, axis=0)
     X_min = np.min(X, axis=0)
     particles = [Particle(n_features, n_clusters, x_min=X_min, x_max=X_max) for _ in range(n_clusters)]
-    best_fitness = 0
-    global_best = None
+    best_fitness = float('inf')
+    global_best_position = None
 
     for iter in tqdm(range(n_iter)):
         particle_distances = np.zeros(shape=(n_samples, n_clusters))
@@ -33,16 +33,19 @@ def pso(X, y, n_iter=100, n_clusters=3):
         bests = [{'fitness': particle.best_fitness, 'best_position': particle.best_position} for particle in particles]
         global_best = bests[np.argmin([best['fitness'] for best in bests])]['best_position'].copy()
 
-        for particle in particles:
-            particle.best_global = global_best
-            particle.update_velocity(n_features)
-            particle.update_position(n_features)
+        if bests[np.argmin([best['fitness'] for best in bests])]['fitness'] < best_fitness :
+            best_fitness = bests[np.argmin([best['fitness'] for best in bests])]['fitness']
+            global_best_position = global_best
+        
+        for particle in particles:            
+            particle.update_velocity(n_features, global_best_position)
+            particle.update_position(n_features, X_max, X_min)
 
     quantization_error = []
     for particle in particles:
         quantization_error.append(particle.fitness())
-
-    print(quantization_error)
+    
+    quantization_error = sum(quantization_error)/3
     return quantization_error
 
 
@@ -52,8 +55,6 @@ def kmeans(X, y, n_iter=100, n_clusters=3):
     X_max = np.max(X, axis=0)
     X_min = np.min(X, axis=0)
     particles = [Particle(n_features, n_clusters, x_min=X_min, x_max=X_max) for _ in range(n_clusters)]
-    best_fitness = 0
-    global_best = None
 
     for iter in tqdm(range(n_iter)):
         particle_distances = np.zeros(shape=(n_samples, n_clusters))
@@ -71,7 +72,8 @@ def kmeans(X, y, n_iter=100, n_clusters=3):
     quantization_error = []
     for particle in particles:
         quantization_error.append(particle.fitness())
-
+    
+    quantization_error = sum(quantization_error)/3
     return quantization_error
 
 
@@ -83,8 +85,8 @@ def main():
     error_pso = pso(X, y, n_clusters=n_classes)
     error_kmeans = kmeans(X,y, n_clusters=n_classes)
 
-    print("error pso", sum(error_pso)/3)
-    print("error kmeans", sum(error_kmeans)/3)
+    print("error pso", error_pso)
+    print("error kmeans", error_kmeans)
 
 
 if __name__ == "__main__":
