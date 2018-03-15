@@ -6,22 +6,23 @@ class Particle(object):
     """
     Particle corresponds to one centroid
     """
-    def __init__(self, n_dim, n_clusters, x_min=0, x_max=1):
+    def __init__(self, n_dim, n_clusters, datapoints, x_min=0, x_max=1):
         self.n_clusters = n_clusters
-        self.datapoints = []
-        self.position = [np.random.uniform(x_min[i], x_max[i]) for i in range(n_dim)]
-        self.velocity = [np.random.rand() for _ in range(n_dim)]
+        self.datapoints = datapoints
+        # self.centroid_position = [[np.random.uniform(x_min[i], x_max[i]) for i in range(n_dim)] for _ in range(n_clusters)]
+        self.centroid_positions = np.random.uniform(x_min, x_max, size=(n_clusters, n_dim))
+        self.velocity = np.random.rand( n_clusters, n_dim)
+
         # Local best
         self.best_fitness = float('inf')
-        self.best_position = self.position.copy()
+        self.best_position = self.centroid_positions.copy()
 
     def fitness(self):
         """
         Fitness of one particle is the negative average inter-distance (since we want to maximize fitness)
         :return:
         """
-        if len(self.datapoints) is 0:
-            return float('inf')
+
         inter_cluster_distance = [self.distance(datapoint) for datapoint in self.datapoints]
         averaged_inter_distance = sum(inter_cluster_distance)/len(self.datapoints)
 
@@ -29,22 +30,45 @@ class Particle(object):
 
         if cluster_fitness < self.best_fitness:
             self.best_fitness = cluster_fitness
-            self.best_position = self.position.copy()
+            self.best_position = self.centroid_positions.copy()
 
         return cluster_fitness
 
-    def assign(self, datapoints):
-        self.datapoints = datapoints
+    def quantization(self):
 
-    def distance(self, datapoint):
+        inter_cluster_distance = [self.distance(datapoint, with_centroid=True) for datapoint in self.datapoints]
+        cluster_sizes = np.zeros(self.n_clusters)
+        sums = np.zeros(self.n_clusters)
+        for d, cluster in inter_cluster_distance:
+            
+            cluster_sizes[cluster] += 1
+            sums[cluster] += d
+
+        return np.sum(d/cluster_sizes)/self.n_clusters
+
+    # def assign(self, datapoints):
+    #     self.datapoints = datapoints
+
+    def distance(self, datapoint, with_centroid=False):
         """
         The distance is defined as the euclidean distance
         :param datapoint:
         :return:
         """
-        d = (datapoint - self.position)**2
-        d = np.sqrt(sum(d))
-        return d
+
+        min_d = np.inf
+        best_centroid = 0
+        for  i, centroid in enumerate(self.centroid_positions):
+            
+            d = np.sqrt(np.sum((datapoint - centroid)**2))
+            if d < min_d:
+                min_d = d
+                best_centroid = i
+
+        if with_centroid:
+            return min_d, best_centroid
+
+        return min_d
 
     def update_velocity(self, n_dim, global_best_position):
         """
@@ -56,20 +80,13 @@ class Particle(object):
         
         r1 = random.random()
         r2 = random.random()
+ 
+        self.velocity = w*self.velocity + c1*r1*(self.best_position - self.centroid_positions) + c2*r2*(global_best_position - self.centroid_positions)
 
-        for i in range(0, n_dim):
-                       
-            self.velocity[i] = w*self.velocity[i] + c1*r1*(self.best_position[i] - self.position[i]) + c2*r2*(global_best_position[i] - self.position[i])
-
-    def update_position(self, n_dim, x_max, x_min):
-        for i in range(0, n_dim):
-            self.position[i] = self.position[i] + self.velocity[i]
-        
-            if self.position[i] > x_max[i]:
-                self.position[i] = x_max[i]
-                
-            if self.position[i] < x_min[i]: 
-                self.position[i] = x_min[i]
+    def update_position(self, n_dim, x_min=0, x_max=1):
+        self.centroid_positions = self.centroid_positions + self.velocity
+    
+        self.centroid_positions = np.clip(self.centroid_positions, x_min, x_max)
 
         
 
