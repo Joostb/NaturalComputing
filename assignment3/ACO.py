@@ -79,8 +79,8 @@ def main():
 
     initial_board = copy.deepcopy(sudoku)
 
-    n_ants = 10
-    n_epochs = 3
+    n_ants = 5
+    n_epochs = 5
 
     plt.figure()
     plt.title("sudoku {} with {} ants".format(sudoku_name, n_ants))

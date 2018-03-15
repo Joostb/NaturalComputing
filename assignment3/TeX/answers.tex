@@ -106,11 +106,11 @@ We can increase $p$ over time, to encourage convergence on a single route.
 
 We have implemented the ACO to solve sudoku's in the following way. We let each ant hold the unsolved sudoku, and give it access to the global pheromone matrix. Each ant constructs a solution, based on the pheromone matrix. First, it picks a random unfilled part of the sudoku, then it looks at all unused numbers of the current row and picks one of those numbers according to the pheromone.
 
-The pheromone is represented in the following way: it is a $9\times9\times9$ matrix $P$, where $P[i][j]$ is a list of probabilities. These probabilities denote the chance of each number in $1-9$ being at that $i,j$ in the sudoku.
+The pheromone is represented in the following way: it is a $9\times9\times9$ matrix $P$, where $P[i][j]$ is a list of probabilities. These probabilities denote the chance of each number in $1-9$ being in the position $i,j$ for the solution to the sudoku.
 
-We initialize the pheromone matrix such that each number has an equal probability of being used. So we fill the matrix with the value $1/9$. After that we let all the ants build their solution. We then pick the best solution, which we define as the solution with the least amount of double numbers per column and per grid. 
+We initialize the pheromone matrix such that each number has an equal probability of being used. So we fill the matrix with the value $1/9$. After that we let all the ants build their solution. We then pick the best solution, which we define as the solution with the least amount of double numbers per column and per grid, which from now on we will denote as \textit{mistakes}. 
 
-We update the pheromone matrix by increasing the probability that the numbers chosen by the best ant, are chosen again. So if the best ant had a 9 on position $(3,3)$, we update $P$ as follows:
+We update the pheromone matrix by increasing the probability that the numbers, chosen by the best ant, are chosen again. So if the best ant had a 9 on position $(3,3)$, we update $P$ as follows:
 
 \begin{align*}
 	P&[i][j][9-1] += p, \\
@@ -121,30 +121,71 @@ where $p$ denotes the amount of added pheromone. Then we normalize the list, to 
 We iterate this process with $n$ ants, for $it$ iterations.
 
 Because we view the pheromone matrix as a matrix of probability vectors, the old pheromone fades because every time we increase the probability of one number, all other probabilities go down. In this way the old pheromone slowly fades away.
- 
-\ \ \  \ \ \ 
 
+For validation, we first ran the algorithm on the easiest sudoku found on the benchmarking page, \texttt{s06b}. We first tried to see what the effect was for different choices for the number of ants $n$. The results may be seen in figure \ref{fig:sudoku_easy}. What we can observe is that there are significant differences. When using 10 ants, we see that the algorithm consistently finds better solutions then when using 1 ant. When using 1 ant, we see that it sometimes does find a solution, but if it does not, than the solution is often more suboptimal than those found for 10 ants. Unfortunately we could not run more than 3 times due to time constraints.
 
+For the part, we will look at the performance when increasing the difficulty of the sudokus that have to be solved. For this we looked at four other sudokus: \texttt{10a}, \texttt{10b}, \texttt{11a} and \texttt{11b}. The results may be found in figure \ref{fig:sudokus}. Judging the website, the order of difficulty is in ascending difficulty: $\texttt{10b} > \texttt{10a} > \texttt{11a} > \texttt{11b}$. This is somewhat reflected in our results, where \texttt{10a} had found a better solution once than was the solutions for \texttt{10b}. However, overall (judging from only three runs) the solutions for \texttt{10b} were better. For \texttt{11a} and \texttt{11b} the results were that \texttt{11b} was almost as hard as \texttt{10b} and \texttt{11a} was the hardest. However, since we could not do many runs and could not use more ants, these results are preliminary.
 
+Overall we can say that the power of ACO lies in having more ants and randomness (figure \ref{fig:sudoku_easy_1} vs \ref{fig:sudoku_easy_5}). As sometimes solutions are found and sometimes they are not. There is another parameter which could have an effect on the performance, $p$, the added pheromone. However we did not have sufficient time to analyse the effect of this parameter. We hypothesize that having a lower value makes learning slower, but it may help the algorithm to escape from local optima. These may be observed by the flat lines in the plots. More ants may also help this problem, judging from figure \ref{fig:sudoku_easy_1} vs \ref{fig:sudoku_easy_10}.
 
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_easiest_1.eps}
+        \caption{1 ant}
+        \label{fig:sudoku_easy_1}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_easiest_10.eps}
+        \caption{10 ants}
+        \label{fig:sudoku_easy_10}
+    \end{subfigure} 
+    \caption{A comparison between using 1 and 10 ants for the ACO algorithm with the easiest sudoku.}
+    \label{fig:sudoku_easy}
+\end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/sudoku_easiest_5.eps}
+    \caption{Easiest algorithm, using 10 ants.}
+    \label{fig:sudoku_easy_5}
+\end{figure}
 
----------------
-
-The fitness is the inverse of the number of collisions (where a collision means that two of the same numbers appear in the same row, column or matrix)
-
-The rows each hold permutations of the 9 numbers. 
-
-The columns and the matrices contribute to the fitness.
-
-The matrix is a stack on top of the sudoku, with for each value, the chance that is should be in that specific spot.
-
-(so layer [1] is the 9x9 matrix that denotes the probabilities of the places where the 1's should go. Layer [9] does the same, but for 9's.)
-
-We construct some solutions based on the matrices, and then update the pheromones, by increasing the chance that the best solution occurs. Alll other values fade some amount.
-
-????
-
-
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_10a_5.eps}
+        \caption{\texttt{10a}}
+        \label{fig:sudoku_10a}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_10b_5.eps}
+        \caption{\texttt{10b}}
+        \label{fig:sudoku_10b}
+    \end{subfigure} 
+    
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_11a_5.eps}
+        \caption{\texttt{11a}}
+        \label{fig:sudoku_11a}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sudoku_11b_5.eps}
+        \caption{\texttt{11b}}
+        \label{fig:sudoku_11b}
+    \end{subfigure}
+    
+    \caption{A comparison between using different sudokus, each with a harder difficulty.}
+    \label{fig:sudokus}
+\end{figure}
 
 \end{document}
