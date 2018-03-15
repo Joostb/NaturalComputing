@@ -19,20 +19,11 @@ class Particle(object):
 
     def fitness(self):
         """
-        Fitness of one particle is the negative average inter-distance (since we want to maximize fitness)
+        Fitness of one particle is the same as the quantization error
         :return:
         """
+        return self.quantization()
 
-        inter_cluster_distance = [self.distance(datapoint) for datapoint in self.datapoints]
-        averaged_inter_distance = sum(inter_cluster_distance)/len(self.datapoints)
-
-        cluster_fitness = - averaged_inter_distance
-
-        if cluster_fitness < self.best_fitness:
-            self.best_fitness = cluster_fitness
-            self.best_position = self.centroid_positions.copy()
-
-        return cluster_fitness
 
     def quantization(self):
 
@@ -43,7 +34,7 @@ class Particle(object):
             cluster_sizes[cluster] += 1
             sums[cluster] += d
 
-        return np.sum(sums/cluster_sizes)/self.n_clusters
+        return np.sum(sums / (cluster_sizes+1))/self.n_clusters
 
     # def assign(self, datapoints):
     #     self.datapoints = datapoints
@@ -73,9 +64,9 @@ class Particle(object):
         """
         Update the velocity with using inertia and acceleration constants
         """
-        w = 0.5
-        c1 = 1 
-        c2 = 1 
+        w = 0.72
+        c1 = 1.49
+        c2 = 1.49
         
         r1 = random.random()
         r2 = random.random()
@@ -99,9 +90,3 @@ class Particle(object):
         
         for centroid in range(self.n_clusters):
             self.centroid_positions[centroid] = centroid_update[centroid]/centroid_nb[centroid]
-
-        
-
-
-        
-        
