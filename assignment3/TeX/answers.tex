@@ -90,12 +90,15 @@ Only an ant that randomly decides to choose the upper route, would be forced to 
 A result of this is that the convergence (if any) is much slower when there is no tabu list versus if such a list is used.
 
 \section{}
-%NOTE Should we answer this question in the context of the image, or not?
+Encouraging exploitation means following the pheromone. On the other hand, exploration is encouraged by explicitly not following the pheromone. We can use this and, the fact that the ant is allowed to lay pheromone at every time step to encourage exploration even for ants following the pheromone. Every ant has a chance $p$ to follow the pheromone, and a chance $1 - p$ to go in a random direction. 
 
-Encouraging exploitation means following the pheromone. On the other hand, exploration is encouraged by explicitly not following the pheromone. 
+If the ant chooses to leave the pheromone path, it lays a certain amount $a$ of pheromone, encouraging other ants to diverge from the path and explore a new route. This greatly increases the chance that one of the exploring ants finds a better route.
 
-Let $q \in [0,1]$ be a random variable. Let $q_0$ be a parameter such that the ant randomly makes a decision if $q < q_0$, and the ant follows the pheromone trail otherwise.
+Then, if one of the ants finds a better solution, we can put some amount of pheromone proportional to the fitness on the new route.
 
+It might be beneficial to keep track of the difference between the two different types of pheromone, because we don't want the ants to accidentally introduce bad routes, because too many ants follow the 'local' pheromone.
+
+We can increase $p$ over time, to encourage convergence on a single route. 
 
 
 \section{}
