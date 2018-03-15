@@ -18,7 +18,7 @@ class Ant(object):
         self.pheromone_matrix = pheromone_matrix
         self.current_solution = self.unsolved_sudoku.copy()
 
-    def solve_sudoku(self):
+    def solve_sudoku(self, epsilon_greedy = 0.2):
         # reset the sudoku
         self.current_solution = self.unsolved_sudoku.copy()
 
@@ -35,7 +35,11 @@ class Ant(object):
         for index in indexes:
             if self.current_solution[index[0]][index[1]] == 0:
                 pheromones = self.pheromone_matrix[index[0]][index[1]]
-                probs = pheromones* possible[index[0]]
+                probs = pheromones
+                if np.random.rand() < epsilon_greedy:
+                    probs = np.ones(9)/9
+
+                probs = probs * possible[index[0]]
                 probs = probs / np.sum(probs)
                 number = np.random.choice(range(1,10), p=probs)
                 possible[index[0]][number - 1] = 0
@@ -44,7 +48,7 @@ class Ant(object):
 
 
     def fitness(self):
-        return self.row_violations() + self.column_violations() + self.subgrid_violations()
+        return self.column_violations() + self.subgrid_violations()
 
     def row_violations(self):
         number_updates = 0
@@ -139,7 +143,7 @@ def valid(board):
         return False
 
 
-def ant_colony_opt(matrix, n_ants = 20, max_iterations = 23000):
+def ant_colony_opt(matrix, n_ants = 300, max_iterations = 23000):
     best_pheromone_matrix = np.ones(shape=(9,9,9)) / 9
 
     ants = [Ant(matrix.copy(), best_pheromone_matrix)]
@@ -160,7 +164,7 @@ def ant_colony_opt(matrix, n_ants = 20, max_iterations = 23000):
 
         for i in range(9):
             for j in range(9):
-                best_pheromone_matrix[i][j][best_ant.current_solution[i,j] - 1] += 0.00005
+                best_pheromone_matrix[i][j][best_ant.current_solution[i,j] - 1] += 0.0005
                 best_pheromone_matrix[i][j] /= np.sum(best_pheromone_matrix[i][j])
 
 
