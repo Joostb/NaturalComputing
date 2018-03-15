@@ -68,6 +68,18 @@ After the first iteration, assuming $r_1 > w$, there will be a negative update, 
 This would iterate for a very long time, but we think because of the last negative update, we would eventually reach (or get close to) the optimal value. This is assuming we don't draw random numbers for $r_1$.
 
 \section{}
+For this exercise we implemented PSO and compared it to Kmeans. Both are implementations as proposed in the supplied paper.As PSO relies on randomness (apart from instantiation) by the two random parameters $r_1$ and $r_2$, we run the PSO algorithm 10 times. The results may be found in figure \ref{fig:pso_kmeans}. 
+
+Here we can see that there is quite some variation for the results of PSO. We also see that every run converges, in the sense that the algorithm cannot find a better result at some point in time. The algorithm itself however, does not converge in any run as was evident from the output.
+
+Another thing, which is probably the most obvious, is that PSO never manages to beat kmeans in terms of quantization error. However our implementation does not manage to get the results that were reported in the paper, so there could be a mistake in the code. We do use the \textit{best} values for $w = 0.72$ and $c_1 = c_2 = 1.49$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/pso_kmeans.eps}
+	\caption{Comparison of 10 runs of PSO and kmeans. The quantization error is plotted as a function of iterations.}
+	\label{fig:pso_kmeans}
+\end{figure}
 
 \section{}
 
@@ -78,7 +90,7 @@ Only an ant that randomly decides to choose the upper route, would be forced to 
 A result of this is that the convergence (if any) is much slower when there is no tabu list versus if such a list is used.
 
 \section{}
-\textbf{Should we answer this question in the context of the image, or not?}
+%NOTE Should we answer this question in the context of the image, or not?
 
 Encouraging exploitation means following the pheromone. On the other hand, exploration is encouraged by explicitly not following the pheromone. 
 
