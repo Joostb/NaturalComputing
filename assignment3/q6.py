@@ -8,107 +8,82 @@ Created on Sun Mar 11 11:08:54 2018
 import numpy as np
 import random
 import copy
+from tqdm import tqdm
 
 
-class Value(object):
+class Ant(object):
 
-    def __init__(self, number, row, column):
-        self.number = int(number)
-        self.row = row
-        self.column = column
-        self.candidate = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.pheromone = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+    def __init__(self, unsolved_sudoku, pheromone_matrix):
+        self.unsolved_sudoku = unsolved_sudoku.copy()
+        self.pheromone_matrix = pheromone_matrix
+        self.current_solution = self.unsolved_sudoku.copy()
 
-        if self.number > 0:
-            self.candidate[self.number - 1] = 1
+    def solve_sudoku(self):
+        # reset the sudoku
+        self.current_solution = self.unsolved_sudoku.copy()
 
-        if self.number == 0:
-            self.candidate = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+        indexes = np.asarray([coord for sublist in [[(i,j) for j in range(9)] for i in range(9)] for coord in sublist])
+        np.random.shuffle(indexes)
 
-    def setCandidate(self, index, value):
+        possible = np.ones((9,9), dtype=bool)
+        for i, row in enumerate(possible):
+            for j in range(9):
+                if self.unsolved_sudoku[i][j] != 0:
+                    # make sure that we only pick new numbers for each row
+                    possible[i][self.unsolved_sudoku[i][j] - 1] = 0
 
-        self.candidate[index] = value
-
-        if sum(self.candidate) == 1:
-            for i, value in enumerate(self.candidate):
-                if value == 1:
-                    self.number = i + 1
-
-
-def row_simplification(matrix):
-    number_updates = 0
-
-    for row in range(len(matrix)):
-        numbers_in_row = []
-        for column in range(len(matrix[0])):
-            value = matrix[row][column]
-            if value.number > 0:
-                numbers_in_row.append(value.number)
-        for column in range(len(matrix[0])):
-            value = matrix[row][column]
-            if value.number == 0:
-                for number in numbers_in_row:
-                    if value.candidate[number - 1] != 0:
-                        value.setCandidate(number - 1, 0)  # value.candidate[number-1] = 0
-                        number_updates = number_updates + 1
-
-    return number_updates
+        for index in indexes:
+            if self.current_solution[index[0]][index[1]] == 0:
+                pheromones = self.pheromone_matrix[index[0]][index[1]]
+                probs = pheromones* possible[index[0]]
+                probs = probs / np.sum(probs)
+                number = np.random.choice(range(1,10), p=probs)
+                possible[index[0]][number - 1] = 0
+                self.current_solution[index[0]][index[1]] = number
 
 
-def column_simplification(matrix):
-    number_updates = 0
 
-    for column in range(len(matrix[0])):
-        numbers_in_column = []
-        for row in range(len(matrix)):
-            value = matrix[row][column]
-            if value.number > 0:
-                numbers_in_column.append(value.number)
-        for row in range(len(matrix)):
-            value = matrix[row][column]
-            if value.number == 0:
-                for number in numbers_in_column:
-                    if value.candidate[number - 1] != 0:
-                        value.setCandidate(number - 1, 0)  # value.candidate[number-1] = 0
-                        number_updates = number_updates + 1
+    def fitness(self):
+        return self.row_violations() + self.column_violations() + self.subgrid_violations()
 
-    return number_updates
+    def row_violations(self):
+        number_updates = 0
+        total_violations = 0
+        for row in self.current_solution:
+            occurences = np.bincount(row)
+            total_violations += np.sum(occurences[occurences != 1])
 
 
-def extract_subgrid(i, matrix):
-    row_count = i // 3
-    column_count = i % 3 * 3
-
-    subgrid = [[] for _ in range(3)]
-
-    for row in range(3):
-        for column in range(3):
-            subgrid[row].append(matrix[row_count * 3 + row][column_count + column])
-
-    return subgrid
+        return total_violations
 
 
-def subgrid_simplification(matrix):
-    number_updates = 0
+    def column_violations(self):
+        m = self.current_solution.copy()
+        m = m.T
+        number_updates = 0
+        total_violations = 0
+        for row in m:
+            occurences = np.bincount(row)
+            total_violations += np.sum(occurences[occurences != 1])
 
-    for i in range(0, 9):
-        subgrid = extract_subgrid(i, matrix)
-        numbers_in_subgrid = []
-        for row in range(len(subgrid)):
-            for column in range(len(subgrid[0])):
-                value = subgrid[row][column]
-                if value.number > 0:
-                    numbers_in_subgrid.append(value.number)
-        for row in range(len(subgrid)):
-            for column in range(len(subgrid[0])):
-                value = subgrid[row][column]
-                if value.number == 0:
-                    for number in numbers_in_subgrid:
-                        if value.candidate[number - 1] != 0:
-                            value.setCandidate(number - 1, 0)  # value.candidate[number-1] = 0
-                            number_updates = number_updates + 1
+        return total_violations
 
-    return number_updates
+    def extract_subgrid(self, i, j):
+        i *= 3
+        j *= 3
+
+        return np.reshape(self.current_solution[i:i+3, j:j+3], 9)
+
+
+    def subgrid_violations(self):
+        total_violations = 0
+        for i in range(3):
+            for j in range(3):
+                row = self.extract_subgrid(i,j)
+                occurences = np.bincount(row)
+                total_violations += np.sum(occurences[occurences != 1])
+
+        return total_violations
 
 
 def isRowValid(board):
@@ -164,96 +139,47 @@ def valid(board):
         return False
 
 
-def ant_colony_opt(matrix, initialBoard, current_it):
-    award = 1
-    punishment = 0.005
-    unassignedSet = []
-    initialBoardLocal = copy.deepcopy(matrix)
+def ant_colony_opt(matrix, n_ants = 20, max_iterations = 23000):
+    best_pheromone_matrix = np.ones(shape=(9,9,9)) / 9
 
-    # list of unassigned cells
-    for row in range(len(initialBoard)):
-        for column in range(len(initialBoard[0])):
-            value = matrix[row][column]
-            if (value.number == 0):
-                unassignedSet.append(value)
+    ants = [Ant(matrix.copy(), best_pheromone_matrix)]
+    print(ants[0].fitness())
+    best_fitness = 90000
+    best_ant = None
 
-    if len(unassignedSet) == 0:
-        current_it = current_it + 1
-        return 0
+    for i in tqdm(range(max_iterations)):
+        for i, ant in enumerate(ants):
 
-    # randomly select an unassigned cell
-    selectedUCell = unassignedSet[random.randint(0, len(unassignedSet) - 1)]
-    candidates = selectedUCell.candidate
-    maxPheromone = -float('inf')
-    aNumber = 0
+            ant.solve_sudoku()
+            fitness = ant.fitness()
 
-    # assign cell to the candidate with the highest pheronome accumulation
-    for k in range(len(initialBoard)):
-        if candidates[k] == 1:
-            pheromone = selectedUCell.pheromone[k]
-            if pheromone > maxPheromone:
-                maxPheromone = pheromone
-                aNumber = k + 1
+            if fitness < best_fitness:
+                best_ant = copy.deepcopy(ant)
+                best_fitness = fitness
+                tqdm.write(str(best_fitness))
 
-    # test if its compatible
-    if aNumber > 0:
-        selectedUCell.number = aNumber
-    else:
-        if sum(selectedUCell.candidate) == 0:
-            current_it = current_it + 1
-            return current_it
-        for i in selectedUCell.candidate:
-            if (i == 1):
-                selectedUCell.number = i + 1
+        for i in range(9):
+            for j in range(9):
+                best_pheromone_matrix[i][j][best_ant.current_solution[i,j] - 1] += 0.00005
+                best_pheromone_matrix[i][j] /= np.sum(best_pheromone_matrix[i][j])
 
-    if valid(matrix):
-        simplify(matrix)
 
-        if valid(matrix):
-            selectedUCell.pheromone[aNumber - 1] = selectedUCell.pheromone[aNumber - 1] + award
-        else:
-            for row in range(len(matrix)):
-                for column in range(len(matrix[0])):
-                    matrix[row][column].number = initialBoardLocal[row][column].number
-                    matrix[row][column].candidate = initialBoardLocal[row][column].candidate
 
-            current_it = current_it + 1
-    else:
-        selectedUCell.pheromone[aNumber - 1] = max(selectedUCell.pheromone[aNumber - 1] - punishment, 0)
-        for row in range(len(matrix)):
-            for column in range(len(matrix[0])):
-                matrix[row][column].number = initialBoardLocal[row][column].number
-                matrix[row][column].candidate = initialBoardLocal[row][column].candidate
+    print(best_fitness)
 
-        current_it = current_it + 1
+    print_matrix(best_ant.current_solution)
 
-    if current_it > 1000:
-        # no possible solution, try from the beginning
-        for row in range(len(matrix)):
-            for column in range(len(matrix[0])):
-                matrix[row][column].number = initialBoard[row][column].number
-                matrix[row][column].candidate = initialBoard[row][column].candidate
-        current_it = 0
 
-    return current_it
+
+
 
 
 def print_matrix(matrix):
     for row in range(len(matrix)):
-        print(matrix[row][0].number, matrix[row][1].number, matrix[row][2].number, matrix[row][3].number,
-              matrix[row][4].number, matrix[row][5].number, matrix[row][6].number, matrix[row][7].number,
-              matrix[row][8].number)
+        print(matrix[row][0], matrix[row][1], matrix[row][2], matrix[row][3],
+              matrix[row][4], matrix[row][5], matrix[row][6], matrix[row][7],
+              matrix[row][8])
 
-
-def simplify(matrix):
-    while True:
-        nb_updates = 0
-        nb_updates = nb_updates + row_simplification(matrix)
-        nb_updates = nb_updates + column_simplification(matrix)
-        nb_updates = nb_updates + subgrid_simplification(matrix)
-
-        if (nb_updates == 0):
-            break
 
 
 def sudoku_completed(board):
@@ -266,21 +192,14 @@ def sudoku_completed(board):
 
 
 def main():
-    sudoku = np.loadtxt("s11a.txt", dtype=np.int8)
-
-    matrix = [[] for _ in range(len(sudoku[0]))]
-    for row in range(len(sudoku)):
-        for column in range(len(sudoku[0])):
-            matrix[row].append(Value(sudoku[row][column], row, column))
-
+    sudoku = np.loadtxt("s01b.txt", dtype=np.int8)
+    matrix = sudoku
     print_matrix(matrix)
 
     initialBoard = copy.deepcopy(matrix)
     current_it = 0
 
-    while not sudoku_completed(matrix) or not sudoku_completed(matrix):
-        simplify(matrix)
-        current_it = ant_colony_opt(matrix, initialBoard, current_it)
+    ant_colony_opt(matrix)
 
         # print('--------------')
         # print_matrix(matrix)
