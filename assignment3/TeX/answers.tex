@@ -103,6 +103,34 @@ We can increase $p$ over time, to encourage convergence on a single route.
 
 \section{}
 
+
+We have implemented the ACO to solve sudoku's in the following way. We let each ant hold the unsolved sudoku, and give it access to the global pheromone matrix. Each ant constructs a solution, based on the pheromone matrix. First, it picks a random unfilled part of the sudoku, then it looks at all unused numbers of the current row and picks one of those numbers according to the pheromone.
+
+The pheromone is represented in the following way: it is a $9\times9\times9$ matrix $P$, where $P[i][j]$ is a list of probabilities. These probabilities denote the chance of each number in $1-9$ being at that $i,j$ in the sudoku.
+
+We initialize the pheromone matrix such that each number has an equal probability of being used. So we fill the matrix with the value $1/9$. After that we let all the ants build their solution. We then pick the best solution, which we define as the solution with the least amount of double numbers per column and per grid. 
+
+We update the pheromone matrix by increasing the probability that the numbers chosen by the best ant, are chosen again. So if the best ant had a 9 on position $(3,3)$, we update $P$ as follows:
+
+\begin{align*}
+	P&[i][j][9-1] += p, \\
+\end{align*}
+
+where $p$ denotes the amount of added pheromone. Then we normalize the list, to make sure it is a probability vector.
+
+We iterate this process with $n$ ants, for $it$ iterations.
+
+Because we view the pheromone matrix as a matrix of probability vectors, the old pheromone fades because every time we increase the probability of one number, all other probabilities go down. In this way the old pheromone slowly fades away.
+ 
+\ \ \  \ \ \ 
+
+
+
+
+
+
+---------------
+
 The fitness is the inverse of the number of collisions (where a collision means that two of the same numbers appear in the same row, column or matrix)
 
 The rows each hold permutations of the 9 numbers. 
