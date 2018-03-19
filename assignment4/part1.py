@@ -1,6 +1,7 @@
 import math
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 def formula(n, p):
     
@@ -23,7 +24,7 @@ def simulation(n, p):
     return prob
         
 
-n = 21
+n = 30
 p = 0.6
 
 result = formula(n,p)
@@ -31,4 +32,16 @@ sim = simulation(n, p)
 
 print(result)
 print(sim)
+
+'''size = [2,5,10,20,40]
+proba = [0.3, 0.4, 0.6, 0.8]
+
+for p in proba:
+    result = []
+    for n in size:
+        result.append(formula(n, p))
+    plt.plot(size, result, label="Probability = {}".format(p))
+    
+plt.legend() 
+plt.show()'''
 
