@@ -1,20 +1,22 @@
 import math
 import random
+import numpy as np
 
 def formula(n, p):
     
     total = 0
-    for i in range(int(n/2)+1, n+1):
-        permutation = math.factorial(n) / math.factorial(i) * math.factorial(n-i)
+    for i in range(math.ceil(n/2), n+1):
+        permutation = math.factorial(n) / (math.factorial(i) * math.factorial(n-i))
         total += math.pow(p,i) * math.pow((1-p), (n-i)) * permutation 
         
     return total
 
 def simulation(n, p): 
     
-    diagnostic = []
+    diagnostic = np.zeros(n)
     for i in range(n):
-        diagnostic.append(random.randint(0, 1))
+        if random.random() <= p:
+            diagnostic[i] = 1
         
     prob = sum(diagnostic)/n
     
