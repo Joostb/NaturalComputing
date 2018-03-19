@@ -1,0 +1,35 @@
+\documentclass[11pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{hyperref}
+\epstopdfsetup{outdir=./images/}
+\usepackage{subcaption}
+
+\title{Natural Computing, Assignment 3}
+\author{Dennis Verheijden - s4455770 \and Pauline Lauron - s1016609 \and Joost Besseling - s4796799}
+\begin{document}
+\maketitle
+
+\section{}
+\subsection{}
+The probability that all three doctors give the correct answer is $ 0.8^3 = 0.512$. 
+\newline The probability that at least 2 doctors make the right call is $0.8*0.8*0.2 + 0.8*0.2*0.8 + 0.2*0.8*0.8 = 0.384$
+\newline The probability that this group makes the right decision based on majority voting is $0.512 + 0.384 = 0.896$
+
+\subsection{}
+The general formula is $\displaystyle\sum_{i = n/2}^{n} p^i*(1-p)^{n-i} * \binom{n}{i}$
+
+
+
+
+
+
+\end{document}
