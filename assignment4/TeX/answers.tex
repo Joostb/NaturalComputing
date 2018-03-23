@@ -13,6 +13,9 @@
 \epstopdfsetup{outdir=./images/}
 \usepackage{subcaption}
 
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+
 \title{Natural Computing, Assignment 3}
 \author{Dennis Verheijden - s4455770 \and Pauline Lauron - s1016609 \and Joost Besseling - s4796799}
 \begin{document}
@@ -20,12 +23,36 @@
 
 \section{}
 \subsection{}
-The probability that all three doctors give the correct answer is $ 0.8^3 = 0.512$. 
-\newline The probability that at least 2 doctors make the right call is $0.8*0.8*0.2 + 0.8*0.2*0.8 + 0.2*0.8*0.8 = 0.384$
-\newline The probability that this group makes the right decision based on majority voting is $0.512 + 0.384 = 0.896$
+\begin{itemize}
+	\item 
+	The probability that all three doctors give the correct answer is $ 0.8^3 = 0.512$. 
+	\item 
+	The probability that exactly 2 doctors make the right call is $0.8*0.8*0.2 + 0.8*0.2*0.8 + 0.2*0.8*0.8 = 0.384$. Therefore, the probability that \emph{at least} two doctors make the right call is $0.512 + 0.384 = 0.896$.
+	\item  The probability that this group makes the right decision based on majority voting is $0.512 + 0.384 = 0.896$. 
+	%(Alternative approach, the probability that they all fail, and that exactly two doctors fail is ...)
+\end{itemize}
+
 
 \subsection{}
-The general formula is $\displaystyle\sum_{i = n/2}^{n} p^i*(1-p)^{n-i} * \binom{n}{i}$
+The general formula is 
+\[
+	P(\text{correct predictions} > c/2) \sum_{i = \floor{n/2}}^{n} p^{i}  (1-p)^{n-i}  \binom{n}{i}.
+\]
+
+Using this formula, we find a probability of about $0.826$.
+
+\subsection{}
+If we use $10000$ runs of the simulations, we get an approximately equal result.
+
+(TODO !!!!)
+(DO SOMETHING WITH HOW APPROXIMATELY?)
+
+\subsection{}
+In the comments is a stacklink how to make a nice table
+
+%https://stackoverflow.com/questions/11623056/matplotlib-using-a-colormap-to-color-table-cell-background?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+
 
 
 

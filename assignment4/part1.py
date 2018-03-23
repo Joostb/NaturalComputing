@@ -12,19 +12,26 @@ def formula(n, p):
         
     return total
 
-def simulation(n, p): 
+def simulation(n, p, n_simulations=10000):
+    """ 
+        We run n_simulations simulations, and check in what fraction we make the correct
+        prediction
+    """
+    correct = 0
+    for i in range(n_simulations):
+        diagnostic = np.zeros(n)
+        for i in range(n):
+            if random.random() <= p:
+                diagnostic[i] = 1
+            
+        prob = sum(diagnostic)/n
+        if prob > 0.5:
+            correct += 1
     
-    diagnostic = np.zeros(n)
-    for i in range(n):
-        if random.random() <= p:
-            diagnostic[i] = 1
-        
-    prob = sum(diagnostic)/n
-    
-    return prob
+    return correct / n_simulations
         
 
-n = 30
+n = 21
 p = 0.6
 
 result = formula(n,p)
