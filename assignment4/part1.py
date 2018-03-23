@@ -2,6 +2,7 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+from pandas import *
 
 def formula(n, p):
     
@@ -31,8 +32,30 @@ def simulation(n, p, n_simulations=10000):
     return correct / n_simulations
         
 
+def plotting(jury_max_size, jury_step_size, step=0.2):
+    probabilities = np.arange(0,1,step)
+    juries = np.arange(1, jury_max_size, jury_step_size)
+    # for p in probabilities:
+    #     for j in juries:
+    table = [[formula(j,p) for j in juries] for p in probabilities]
+
+    axs = plt.subplot(frame_on=False)
+    axs.xaxis.set_visible(False) 
+    axs.yaxis.set_visible(False)
+
+    the_table = axs.table(
+        cellText=table, 
+        loc='center',
+        rowLabels=['a','b','c','d','e'],
+        colLabels=[1,2,3,4,5],
+        # cellColours=table
+        )
+
+    plt.show()
 n = 21
 p = 0.6
+
+plotting(10, 2)
 
 result = formula(n,p)
 sim = simulation(n, p)
