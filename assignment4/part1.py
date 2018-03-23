@@ -38,7 +38,7 @@ def plotting(jury_max_size, jury_step_size, step=0.2):
     # for p in probabilities:
     #     for j in juries:
     table = [[formula(j,p) for j in juries] for p in probabilities]
-
+    colors = [[[1 - formula(j,p)/2, 0, 0] for j in juries] for p in probabilities]
     axs = plt.subplot(frame_on=False)
     axs.xaxis.set_visible(False) 
     axs.yaxis.set_visible(False)
@@ -46,16 +46,18 @@ def plotting(jury_max_size, jury_step_size, step=0.2):
     the_table = axs.table(
         cellText=table, 
         loc='center',
-        rowLabels=['a','b','c','d','e'],
-        colLabels=[1,2,3,4,5],
-        # cellColours=table
+        rowLabels=probabilities,
+        colLabels=juries,
+        # colWidths=[0.1]*len(juries),
+        cellColours=colors
         )
-
+    the_table.set_fontsize(24)
+    the_table.scale(1.1,1.1)
     plt.show()
 n = 21
 p = 0.6
 
-plotting(10, 2)
+plotting(50, 10)
 
 result = formula(n,p)
 sim = simulation(n, p)
