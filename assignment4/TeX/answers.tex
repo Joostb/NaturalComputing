@@ -106,11 +106,23 @@ Now that we have this implementation, we can also make simulations for different
 	\caption{Comparison of different sample sizes for the percentage of left-out items.}
 	\label{fig:leftout}
 \end{figure}
-\section{}
 
 \section{}
+The difference between bootstrapping and random subspaces is how the training data is made. 
+\begin{itemize}
+	\item 
+	For the bootstrapping, we selected randomly the data among all the training data.
+	\item
+	For the radom suspaces, we selected data among each training example. 
+\end{itemize}
+
 
 \section{}
+For calculated the importance of variable, we can use the Mean Decrease Impurity. This compute how much each feature decreases the weighted impurity in a tree where the impurity is the measure based on which the optimal condition is chosen.
+%critics : http://blog.datadive.net/selecting-good-features-part-iii-random-forests/
+
+\section{}
+In order to implement a random forest, we used the Iris dataset, the sklearn librar and the package RandomForestClassifier. They are 2 parameters that we have try different values : n\_estimators which is the number of tree and the max\_depth which is the maximum depth of the tree. When we increase the number of trees and the maximum of depth, the score seems to increase too (up to a certain threshold). 
 
 \section*{Boosting}
 
