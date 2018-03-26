@@ -85,7 +85,27 @@ The filled in table may be found below in table \ref{table:a}. Here we can see t
 \end{table}
 
 \section{}
+The formula for the percentage of items that are not in a sample using Bootstrapping is:
+\[
+	p_{notPresent} = (1 - \frac{1}{N})^N
+\]
+We also made simulations which approximate this function, as found in figure \ref{fig:approx_vs_real}. Here we see that our simulations approximate our formula. Which adds evidence to its correctness.
 
+Now that we have this implementation, we can also make simulations for different $N$. The results for this are shown in figure \ref{fig:leftout}. Here we can see the comparisons for different $N$. We see that the probability of items that do not occur converge to $0.37$ for larger $N$. We see that there probably is an exponential relation as the probability first rapidly increases to $0.25$ for $N = 2$ and at $N=5$ it is almost at convergence.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/approx_vs_real.eps}
+	\caption{Comparison of our simulation and the exact value.}
+	\label{fig:approx_vs_real}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/different_sample_sizes.eps}
+	\caption{Comparison of different sample sizes for the percentage of left-out items.}
+	\label{fig:leftout}
+\end{figure}
 \section{}
 
 \section{}
