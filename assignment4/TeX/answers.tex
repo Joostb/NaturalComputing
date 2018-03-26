@@ -21,6 +21,7 @@
 \begin{document}
 \maketitle
 
+\section*{Combining, Bagging \& Random Forests}
 \section{}
 \subsection{}
 \begin{itemize}
@@ -28,7 +29,7 @@
 	The probability that all three doctors give the correct answer is $ 0.8^3 = 0.512$. 
 	\item 
 	The probability that exactly 2 doctors make the right call is $0.8*0.8*0.2 + 0.8*0.2*0.8 + 0.2*0.8*0.8 = 0.384$. Therefore, the probability that \emph{at least} two doctors make the right call is $0.512 + 0.384 = 0.896$.
-	\item  The probability that this group makes the right decision based on majority voting is $0.512 + 0.384 = 0.896$. 
+	\item  The probability that this group makes the right decision based on majority voting is $0.512 + 0.384 = 0.896$ since the majority is when there are at least two individuals. 
 	%(Alternative approach, the probability that they all fail, and that exactly two doctors fail is ...)
 \end{itemize}
 
@@ -42,21 +43,32 @@ The general formula is
 Using this formula, we find a probability of about $0.826$.
 
 \subsection{}
-If we use $10000$ runs of the simulations, we get an approximately equal result.
-
-(TODO !!!!)
-(DO SOMETHING WITH HOW GOOD THE APPROXIMATION IS?)
+If we use $10000$ runs of the simulations, we get an approximately equal result of $0.826$. Writing out more decimals gives us a difference of $0.0057$. So our approximation is pretty good.
 
 \subsection{}
-In the comments is a stacklink how to make a nice table
+We decided to use a surfplot for the visualization. Here we can easily spot the differences when variables change relative to each other.
 
-%https://stackoverflow.com/questions/11623056/matplotlib-using-a-colormap-to-color-table-cell-background?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+The surfplot can be found in figure \ref{fig:surf_probs}. What we can observe from this plot is that the jury size matters for a low number of people, but that this effect has exponentially diminishing returns. The competence, as expected, has the highest effect on the probability of correctly making the right decision.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth]{images/surfplot_probs.eps}
+	\caption{Surfplot of the probabilities as a function of the jury size $c$ and competence $p$.}
+	\label{fig:surf_probs}
+\end{figure}
 
+\subsection{}
+The probabilities for making the correct decision for the groups are:
+\begin{itemize}
+	\item \textbf{radiologists}: $0.850$
+	\item \textbf{doctors}: $0.896$
+	\item \textbf{students}: $0.826$
+\end{itemize}
+To reach the same probability for making the correct decision as the group of doctors, using only students. You would need 28 students. These would, collectively, have a probability of making the correct decision of $0.898$.
 
+\section{}
 
-
-
-
+\section*{Boosting}
+\section{}
 
 \end{document}
