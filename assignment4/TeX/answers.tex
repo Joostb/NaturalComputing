@@ -12,6 +12,7 @@
 \usepackage{hyperref}
 \epstopdfsetup{outdir=./images/}
 \usepackage{subcaption}
+\usepackage[table,xcdraw]{xcolor}
 
 \renewcommand{\thesubsection}{(\alph{subsection})}
 \newcommand{\floor}[1]{\lfloor #1 \rfloor}
@@ -67,8 +68,41 @@ The probabilities for making the correct decision for the groups are:
 To reach the same probability for making the correct decision as the group of doctors, using only students. You would need 28 students. These would, collectively, have a probability of making the correct decision of $0.898$.
 
 \section{}
+The filled in table may be found below in table \ref{table:a}. Here we can see the values for different combinators.  Colors denote the choice that the classifier will make. What we can note from this table is that the choices of these classifiers are in most cases the same. 
+\begin{table}[H]
+	\centering
+	\centering
+	\begin{tabular}{ll|ll|ll|ll|ll|ll|ll}
+		\multicolumn{2}{l}{$p_1(\omega|x)$} & \multicolumn{2}{l|}{$p_2(\omega|x)$} & \multicolumn{2}{l|}{$p_3(\omega|x)$} & \multicolumn{2}{l|}{Mean}                                 & \multicolumn{2}{l|}{Max}                                  & \multicolumn{2}{l|}{Min}                                  & \multicolumn{2}{l|}{Prod}                                     \\ \hline
+		A                & B                & A                 & B                & A                 & B                & A                           & B                           & A                           & B                           & A                           & B                           & A                             & B                             \\ \hline
+		0.9              & 0.1              & 0.9               & 0.1              & 0.0               & 1.0              & \cellcolor[HTML]{F8A102}0.6 & 0.4                         & 0.9                         & \cellcolor[HTML]{F8A102}1.0 & 0.0                         & \cellcolor[HTML]{F8A102}0.1 & 0.0                           & \cellcolor[HTML]{F8A102}0.01  \\
+		0.9              & 0.1              & 0.9               & 0.1              & 0.3               & 0.7              & \cellcolor[HTML]{F8A102}0.7 & 0.3                         & \cellcolor[HTML]{F8A102}0.9 & 0.7                         & \cellcolor[HTML]{F8A102}0.3 & 0.1                         & \cellcolor[HTML]{F8A102}0.243 & 0.007                         \\
+		0.9              & 0.1              & 0.2               & 0.8              & 0.1               & 0.9              & 0.4                         & \cellcolor[HTML]{F8A102}0.6 & \cellcolor[HTML]{FD6864}0.9 & \cellcolor[HTML]{FD6864}0.9 & \cellcolor[HTML]{FD6864}0.1 & \cellcolor[HTML]{FD6864}0.1 & 0.018                         & \cellcolor[HTML]{F8A102}0.072 \\
+		0.0              & 1.0              & 0.0               & 1.0              & 0.0               & 1.0              & 0.0                         & \cellcolor[HTML]{F8A102}1.0 & 0.0                         & \cellcolor[HTML]{F8A102}1.0 & 0.0                         & \cellcolor[HTML]{F8A102}1.0 & 0.0                           & \cellcolor[HTML]{F8A102}1.0  
+	\end{tabular}
+	\caption{Classifier Combination for different methods. Values indicated in orange denote the decision the combiner would make. Values indicated in red denote a tie, the choice here is based on the implementation.}
+	\label{table:a}
+\end{table}
+
+\section{}
+
+\section{}
+
+\section{}
+
+\section{}
 
 \section*{Boosting}
-\section{}
+
+\section*{1}
+
+\section*{2}
+
+\section*{3}
+
+\section*{4}
+
+\section*{5}
+
 
 \end{document}
