@@ -126,9 +126,13 @@ NOTE: What is the baseline? It is 1/10th right?
 ~\\
 For this experiment we used the handwritten digits, aka MNIST, dataset. As this dataset is easy to interpret and it has a decent difficulty to learn as the dataset contains 64 features and 10 classes.
 
-We used the standard \texttt{RandomForestClassifier} from the python module \texttt{sklearn}. We found two variables that we thought to be important: \textit{max\_depth} and \textit{n\_estimators}. These respectively mean the maximum depth of a tree and the number of trees that are trained in the forest. The results are found in figure \ref{fig:mnist_results}.
+We used the standard \texttt{RandomForestClassifier} from the python module \texttt{sklearn}. We found two variables that we thought to be important: \textit{max\_depth}, \textit{n\_estimators} and \textit{max\_features}. These respectively mean the maximum depth of a tree, the number of trees that are trained in the forest and the maximum number of features Random Forest is allowed to try in individual tree. The result of manipulating the first two parameters are found in figure \ref{fig:mnist_results}.
 
 What we can note from this figure, is that both parameters converge. The default value for \textit{n\_estimators} is $10$. This value is roughly the value for which the algorithm converges. The default value for \textit{max\_depth} is not set, i.e. it expands until all leaves are pure or contain less than 2 samples. To better see whether setting this value is helpful, we can examine the results for certain values of the \textit{max\_depth} while leaving the parameter \textit{n\_estimators} to the default value. The results may be found in figure \ref{fig:mnist_lines}. What we can observe is that for a max tree depth of $1$ or $2$ the RandomForestClassifier is already way above chance, being $0.1$. The performance peaks at a max tree depth of 10. After this it starts to decline. This is because the tree is overfitting on the training set, which is an easy pitfall of this type of classifier. However, since it is an ensemble, the damage of overfitting is limited.
+
+~\\ \textbf{NOTE: The part about manipulating \textit{max\_features} should be more fleshed out} \\
+To test different combination of parameters, we use the Grid Search. We obtain a score around 0.93.
+~\\
 
 Conclusion, setting the parameter \textit{n\_estimators} might not be necessary, depending on the domain. However, more estimators lead to more stable predictions. The parameter \textit{max\_depth} however, should be carefully set, as it has the most effect on the mean accuracy of the RandomForestClassifier.
 
@@ -150,9 +154,14 @@ Conclusion, setting the parameter \textit{n\_estimators} might not be necessary,
 
 \section*{1}
 
+
 \section*{2}
 
 \section*{3}
+
+In bagging we train multiple learners by sampling from the dataset with replacement. We combine them by, for example, taking the average decision, or using a majority vote.
+
+In boosting, we also train multiple learners. But we use the learners to weight the samples from the dataset, such that samples that we predict wrong early on, get a higher wait. We combine the learners similarly to the boosting case, but we weight them according to their results on the training set.
 
 \section*{4}
 
