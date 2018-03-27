@@ -1,39 +1,36 @@
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 #parameters
-n_estimators = [10, 30, 60, 100]
-max_depth = [2, 4, 10, 30]
+n_estimators = [10, 50, 100, 350, 500]
+max_depth = [20, 50, 70, 90]
+max_features = ['auto', 'sqrt', 'log2']
+
+random_grid = {'n_estimators': n_estimators,
+               'max_depth': max_depth,
+               'max_features': max_features
+               }
 
 #data
 iris = load_iris()
 
-X = iris.data[:, :2]
+X = iris.data
 y = iris.target
 
-x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
-y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
+x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=0.1)
 
-scores = []
-for i,e in enumerate(n_estimators):
-    for j, d in enumerate(max_depth):
-        rf = RandomForestClassifier(n_estimators=e, max_depth=d)
-        idx = np.arange(len(y))
-        np.random.shuffle(idx)
-        
-        X_train = X[idx]
-        y_train = y[idx]
-        
-        mean = X_train.mean(axis=0)
-        std = X_train.std(axis=0)
-        X_train = (X_train - mean) / std
-        
-        clf = rf.fit(X_train, y_train)
-        
-        scores.append(clf.score(X_train, y_train))
-        
-print(scores)
+#random forest
+rf = RandomForestClassifier()
 
+grid_search = GridSearchCV(estimator = rf, param_grid = random_grid, cv=3, verbose=2)
+
+clf = grid_search.fit(x_train, y_train)
+
+param = grid_search.best_params_
+print(param)
+print(clf.score(x_test, y_test))
+    
