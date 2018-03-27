@@ -122,7 +122,16 @@ For calculated the importance of variable, we can use the Mean Decrease Impurity
 %critics : http://blog.datadive.net/selecting-good-features-part-iii-random-forests/
 
 \section{}
-In order to implement a random forest, we used the Iris dataset, the sklearn librar and the package RandomForestClassifier. They are 2 parameters that we have try different values : n\_estimators which is the number of tree and the max\_depth which is the maximum depth of the tree. When we increase the number of trees and the maximum of depth, the score seems to increase too (up to a certain threshold). 
+In order to implement a random forest, we used the Iris dataset, the sklearn library with the package RandomForestClassifier. We tested 3 parameters :
+\begin{itemize}
+	\item
+	n\_estimators which is the number of tree. The more we increase this number, the more the score is stable and the performance seems better, but the code beging slower
+	\item
+	the max\_depth which is the maximum depth of the tree. If we also increase this number, the performance seems better.
+	\item
+	the max\_features which is the maximum number of features Random Forest is allowed to try in individual tree.
+\end{itemize}
+ To test different combination of parameters, we use the Grid Search. We obtain a score around 0.93.
 
 \section*{Boosting}
 
