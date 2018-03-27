@@ -128,9 +128,14 @@ In order to implement a random forest, we used the Iris dataset, the sklearn lib
 
 \section*{1}
 
+
 \section*{2}
 
 \section*{3}
+
+In bagging we train multiple learners by sampling from the dataset with replacement. We combine them by, for example, taking the average decision, or using a majority vote.
+
+In boosting, we also train multiple learners. But we use the learners to weight the samples from the dataset, such that samples that we predict wrong early on, get a higher wait. We combine the learners similarly to the boosting case, but we weight them according to their results on the training set.
 
 \section*{4}
 
