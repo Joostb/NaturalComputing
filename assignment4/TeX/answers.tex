@@ -108,21 +108,43 @@ Now that we have this implementation, we can also make simulations for different
 \end{figure}
 
 \section{}
-The difference between bootstrapping and random subspaces is how the training data is made. 
+The difference between bootstrapping and random subspaces is how the training data is constructed. 
 \begin{itemize}
-	\item 
-	For the bootstrapping, we selected randomly the data among all the training data.
-	\item
-	For the radom suspaces, we selected data among each training example. 
+	\item In bootstrapping, you randomly select data from the whole dataset with replacement. Such that you can have samples that occur more than once.
+	\item In random subspaces, you randomly select features from the whole dataset. So instead of randomly drawing samples, you draw features from these samples.
 \end{itemize}
 
 
 \section{}
-For calculated the importance of variable, we can use the Mean Decrease Impurity. This compute how much each feature decreases the weighted impurity in a tree where the impurity is the measure based on which the optimal condition is chosen.
+For random forests, the importance of a variable is calculated using a criterion. The most used measure in Forest Classifiers is the Gini Impurity. In short, the Gini Impurity looks for every feature, if we would split based on this feature, how pure the split would be, i.e. how well it separates the classes. The main drawback of this approach is that these classifiers are extremely sensitive to small changes in your training set. One slight change could create a drastically different tree.
+% the Mean Decrease Impurity. This compute how much each feature decreases the weighted impurity in a tree where the impurity is the measure based on which the optimal condition is chosen.
 %critics : http://blog.datadive.net/selecting-good-features-part-iii-random-forests/
 
 \section{}
-In order to implement a random forest, we used the Iris dataset, the sklearn librar and the package RandomForestClassifier. They are 2 parameters that we have try different values : n\_estimators which is the number of tree and the max\_depth which is the maximum depth of the tree. When we increase the number of trees and the maximum of depth, the score seems to increase too (up to a certain threshold). 
+NOTE: What is the baseline? It is 1/10th right?
+
+~\\
+For this experiment we used the handwritten digits, aka MNIST, dataset. As this dataset is easy to interpret and it has a decent difficulty to learn as the dataset contains 64 features and 10 classes.
+
+We used the standard \texttt{RandomForestClassifier} from the python module \texttt{sklearn}. We found two variables that we thought to be important: \textit{max\_depth} and \textit{n\_estimators}. These respectively mean the maximum depth of a tree and the number of trees that are trained in the forest. The results are found in figure \ref{fig:mnist_results}.
+
+What we can note from this figure, is that both parameters converge. The default value for \textit{n\_estimators} is $10$. This value is roughly the value for which the algorithm converges. The default value for \textit{max\_depth} is not set, i.e. it expands until all leaves are pure or contain less than 2 samples. To better see whether setting this value is helpful, we can examine the results for certain values of the \textit{max\_depth} while leaving the parameter \textit{n\_estimators} to the default value. The results may be found in figure \ref{fig:mnist_lines}. What we can observe is that for a max tree depth of $1$ or $2$ the RandomForestClassifier is already way above chance, being $0.1$. The performance peaks at a max tree depth of 10. After this it starts to decline. This is because the tree is overfitting on the training set, which is an easy pitfall of this type of classifier. However, since it is an ensemble, the damage of overfitting is limited.
+
+Conclusion, setting the parameter \textit{n\_estimators} might not be necessary, depending on the domain. However, more estimators lead to more stable predictions. The parameter \textit{max\_depth} however, should be carefully set, as it has the most effect on the mean accuracy of the RandomForestClassifier.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/mnist_results.eps}
+\caption{The mean accuracy of RandomForstClassifiers for different parameter setups.}
+\label{fig:mnist_results}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/mnist_lines.eps}
+\caption{The mean accuracy of RandomForstClassifiers for choices for the max depth of the trees. The number of trees is set to the default value of $10$. A tree depth of \textit{None} means that the tree is allowed to split until the leaf nodes are either pure or have less than 2 samples.}
+\label{fig:mnist_lines}
+\end{figure}
 
 \section*{Boosting}
 

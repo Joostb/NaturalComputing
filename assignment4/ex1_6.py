@@ -1,39 +1,66 @@
-from sklearn.datasets import load_iris
+import sklearn.datasets as datasets
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from tqdm import tqdm
 
 
-#parameters
-n_estimators = [10, 30, 60, 100]
-max_depth = [2, 4, 10, 30]
+def experiment_depth():
+    depths = [1, 2, 5, 10, 100, None]
 
-#data
-iris = load_iris()
+    X, y = datasets.load_digits(return_X_y=True)
 
-X = iris.data[:, :2]
-y = iris.target
+    X = X / 16
 
-x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5
-y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
-scores = []
-for i,e in enumerate(n_estimators):
-    for j, d in enumerate(max_depth):
-        rf = RandomForestClassifier(n_estimators=e, max_depth=d)
-        idx = np.arange(len(y))
-        np.random.shuffle(idx)
-        
-        X_train = X[idx]
-        y_train = y[idx]
-        
-        mean = X_train.mean(axis=0)
-        std = X_train.std(axis=0)
-        X_train = (X_train - mean) / std
-        
-        clf = rf.fit(X_train, y_train)
-        
-        scores.append(clf.score(X_train, y_train))
-        
-print(scores)
+    scores = np.zeros((len(depths), 1))
+    for d, depth in enumerate(tqdm(depths)):
+        clf = RandomForestClassifier(max_depth=depth)
+        clf.fit(X_train, y_train)
+        scores[d] = clf.score(X_test, y_test)
 
+    # Plot results
+    plt.figure()
+    plt.plot(scores)
+    plt.xlabel("max_depth")
+    plt.ylabel("Accuracy")
+    x_labels = [str(depth) if depth else "None" for depth in depths]
+    plt.xticks(np.arange(0, len(scores)), x_labels)
+    plt.show()
+
+
+def experiment_surf(max_depth=100, max_trees=50):
+    forest_sizes = np.arange(1, max_trees+1)
+    depths = np.arange(1, max_depth+1)
+
+    X, y = datasets.load_digits(return_X_y=True)
+
+    X = X/16
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+
+    scores = np.zeros((len(depths), len(forest_sizes)))
+    for d, depth in enumerate(tqdm(depths)):
+        for t, trees in enumerate(forest_sizes):
+            clf = RandomForestClassifier(n_estimators=trees, max_depth=depth)
+            clf.fit(X_train, y_train)
+            scores[d, t] = clf.score(X_test, y_test)
+
+    # Plot results
+    Fs, Ds = np.meshgrid(forest_sizes, depths)
+    fig = plt.figure()
+    ax = fig.gca(projection="3d")
+    ax.plot_surface(Ds, Fs, scores, cmap=cm.coolwarm)
+    ax.set_xlabel("Max Depth")
+    ax.set_ylabel("Trees in Forest")
+    ax.set_zlabel("Accuracy")
+    plt.show()
+
+
+if __name__ == "__main__":
+    # experiment_surf(max_depth=20, max_trees=10)
+    experiment_depth()
