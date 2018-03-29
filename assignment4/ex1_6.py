@@ -61,37 +61,32 @@ def experiment_surf(max_depth=100, max_trees=50):
     plt.show()
 
 
-def joost():
-	#parameters
-	n_estimators = [10, 50, 100, 350, 500]
-	max_depth = [20, 50, 70, 90]
-	max_features = ['auto', 'sqrt', 'log2']
+def gridSearch():
+    #parameters
+    n_estimators = [1,10, 20, 30, 40]
+    max_depth = [1, 2, 5, 10, 100, None]
+    max_features = [None, 'sqrt', 'log2']
 
-	random_grid = {'n_estimators': n_estimators,
-				   'max_depth': max_depth,
-				   'max_features': max_features
-				   }
+    random_grid = {'n_estimators': n_estimators, 'max_depth': max_depth, 'max_features': max_features}
+    
+    X, y = datasets.load_digits(return_X_y=True)
 
-	#data
-	iris = load_iris()
+    X = X / 16
+    
+    x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=0.1)
+   
+    #random forest
+    rf = RandomForestClassifier()
 
-	X = iris.data
-	y = iris.target
+    grid_search = GridSearchCV(estimator = rf, param_grid = random_grid, cv=3, verbose=2)
 
-	x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=0.1)
+    clf = grid_search.fit(x_train, y_train)
 
-	#random forest
-	rf = RandomForestClassifier()
-
-	grid_search = GridSearchCV(estimator = rf, param_grid = random_grid, cv=3, verbose=2)
-
-	clf = grid_search.fit(x_train, y_train)
-
-	param = grid_search.best_params_
-	print(param)
-	print(clf.score(x_test, y_test))
+    param = grid_search.best_params_
+    print(param)
+    print(clf.score(x_test, y_test))
 
 if __name__ == "__main__":
-    # experiment_surf(max_depth=20, max_trees=10)
+    experiment_surf(max_depth=20, max_trees=10)
     experiment_depth()
-	joost()
+    gridSearch()
