@@ -17,7 +17,7 @@
 \renewcommand{\thesubsection}{(\alph{subsection})}
 \newcommand{\floor}[1]{\lfloor #1 \rfloor}
 
-\title{Natural Computing, Assignment 3}
+\title{Natural Computing, Assignment 4}
 \author{Dennis Verheijden - s4455770 \and Pauline Lauron - s1016609 \and Joost Besseling - s4796799}
 \begin{document}
 \maketitle
@@ -116,8 +116,11 @@ The difference between bootstrapping and random subspaces is how the training da
 
 
 \section{}
-For random forests, the importance of a variable is calculated using a criterion. The most used measure in Forest Classifiers is the Gini Impurity. In short, the Gini Impurity looks for every feature, if we would split based on this feature, how pure the split would be, i.e. how well it separates the classes. The main drawback of this approach is that these classifiers are extremely sensitive to small changes in your training set. One slight change could create a drastically different tree.
-% the Mean Decrease Impurity. This compute how much each feature decreases the weighted impurity in a tree where the impurity is the measure based on which the optimal condition is chosen.
+We found multiple scores that are used to calculate variable importance. The first is the Mean Decrease Impurity, this basically calculates how well the set is divided based in each node, because each node only splits on one feature, we can use that to calculate a score.
+
+The other measure is the Mean Decrease Accuracy (MDA). This is calculated by shuffling the contents of one feature in the dataset and keeping the other features the same. After that we calculate the decrease in accuracy. If the feature is not important, than shuffling it shouldn't change the accuracy much. If it is very important, the accuracy should get close to random chance. 
+
+A disadvantage of the MDA is that it might not work correctly when the dataset is not balanced. If have 9 samples of class X, and 1 sample of class Y. And a feature that exactly determines whether a samply belongs to class Y. Shuffling on that feature will only decrease the accuracy by 0.1, but the feature is actually very important for class Y!
 %critics : http://blog.datadive.net/selecting-good-features-part-iii-random-forests/
 
 \section{}
@@ -154,8 +157,23 @@ Conclusion, setting the parameter \textit{n\_estimators} might not be necessary,
 
 \section*{1}
 
+Derive the following weight:
+\[
+	\beta_m = \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m}
+\]
 
 \section*{2}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ex2_2}
+	\caption{A plot of the weight against the error}
+\end{figure}
+As the error goes to 0, the weight goes to infinity. When the error increases to 0.5, the weight of the learner slowly goes to 0, since a learner with a 0.5 error rate doesn't tell us anything about the data. 
+
+If the error increases even further, $err>0.5$, the weight goes negative. This makes sense, because the truth is the opposite of the prediction of the classifier. We can use that to make our ensemble better.
+
+If the learners are weak learners, the weight will be between 0 and 1.
 
 \section*{3}
 
@@ -164,8 +182,40 @@ In bagging we train multiple learners by sampling from the dataset with replacem
 In boosting, we also train multiple learners. But we use the learners to weight the samples from the dataset, such that samples that we predict wrong early on, get a higher wait. We combine the learners similarly to the boosting case, but we weight them according to their results on the training set.
 
 \section*{4}
+Both methods train multiple classifiers, using the results of the intermediate classifiers to somehow measure the importance of each sample. They then both give importance to the difficult instances.
+
+A difference between them is how they do that.
 
 \section*{5}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ex2_5_depth_estimators}
+	\caption{}
+\end{figure}
+We used the same dataset as in the last exercise, because we want to compare the results. We used the sklearn implementation of the AdaBoostClassifier, combined with a DecisionTreeClassifier.  We used  $max\_features=\log_2$ for the decision tree.
+
+
+Since AdaBoost is designed to use weak learners and combine them into a strong learner, we wanted to see how the strength of the individual learner influenced the strength of the combined learner. So we plotted the accuracy against the number of estimators, for 5 different decision trees, each with a higher allowed depth (increasing the strength of the learner). 
+
+We can see that even the weakest possible learner manages to get an accuracy of around 0.8, although it needs many more estimators than the other learners to achieve this result. This shows us that the AdaBoost algorithm really manages to \emph{boost} the learners! Further we can see that having a stronger learner does improve the results.
+
+If we look at the number of estimators, we can see that generally the improvement in accuracy is really high for the first 10 to 20, but after that they tend to plateau.
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ex2_5_lr_estimators}
+	\caption{}
+	\label{fig:lr}
+\end{figure}
+
+
+
+If we look at the learning rate in figure \ref{fig:lr}, we can see that the accuracy decreases really fast if it becomes larger. There is a big difference between the classifiers with a different number of estimators. The accuracy of the smallest classifier, with 10 estimators, goes down really fast. This is because the first estimator gives weights to `important' samples, but it might give high weights to samples that are not that important. Deteriorating the accuracy of the meta-classifier.
+This effect is less strong when we have more estimators, because the later estimators can correct this result.
+
+
 
 
 \end{document}
