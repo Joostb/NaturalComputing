@@ -91,7 +91,7 @@ The formula for the percentage of items that are not in a sample using Bootstrap
 \]
 We also made simulations which approximate this function, as found in figure \ref{fig:approx_vs_real}. Here we see that our simulations approximate our formula. Which adds evidence to its correctness.
 
-Now that we have this implementation, we can also make simulations for different $N$. The results for this are shown in figure \ref{fig:leftout}. Here we can see the comparisons for different $N$. We see that the probability of items that do not occur converge to $0.37$ for larger $N$. We see that there probably is an exponential relation as the probability first rapidly increases to $0.25$ for $N = 2$ and at $N=5$ it is almost at convergence.
+Now that we have this implementation, we can also make simulations for different $N$. The results for this are shown in figure \ref{fig:leftout}. Here we can see the comparisons for different $N$. We see that the probability of items that do not occur converge to $0.37$ for larger $N$. The last thing we can note is that there appears to be an exponential relation to the probability and $N$ as the probability first rapidly increases to $0.25$ for $N = 2$ and at $N=5$ it is almost at convergence.
 
 \begin{figure}[H]
 	\centering
@@ -156,9 +156,31 @@ Conclusion, setting the parameter \textit{n\_estimators} might not be necessary,
 \section*{1}
 
 Derive the following weight:
-\[
-	\beta_m = \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m}
-\]
+\begin{align}
+	\beta_m &= \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m} \\
+	\intertext{where}
+	\text{err}_m &= \frac{\sum_{i=1}^N w_i^{(m)} I(y_i \neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}
+\end{align}
+
+Plugging equation (10.11), which we will denote as $G$ into (10.9) gives:
+\begin{align}
+\beta_m &= \arg \min_\beta \sum_{y_i=G}^N w_i^{(m)} e^{\beta} + \sum_{y_i \neq G}^N w_i^{(m)} e^{-\beta}
+\end{align}
+To solve this we set the derivative to zero:
+\begin{align}
+\frac{d}{d\beta_m} \sum_{y_i=G}^N w_i^{(m)} e^{\beta_m} + \sum_{y_i \neq G}^N w_i^{(m)} e^{-\beta_m} &= 0\\
+\sum_{y_i=G}^N w_i^{(m)} e^{\beta_m} - \sum_{y_i \neq G}^N w_i^{(m)} e^{-\beta_m} &= 0\\
+e^{2\beta_m} &= \frac{\sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{y_i=G}^N w_i^{(m)}}\\
+2 \beta_m &= \log \frac{\sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{y_i=G}^N w_i^{(m)}}\\
+\beta_m &= \frac{1}{2} \log \frac{\sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{y_i=G}^N w_i^{(m)}}\\
+\beta_m &= \frac{1}{2} \log \frac{\sum_{i=1}^N w_i^{(m)} - \sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{y_i=G}^N w_i^{(m)}}\\
+\beta_m &= \frac{1}{2} \log \frac{\frac{1}{\sum_{i=1}^N w_i^{(m)}} \sum_{i=1}^N w_i^{(m)} - \sum_{y_i \neq G}^N w_i^{(m)}}{\frac{1}{\sum_{i=1}^N w_i^{(m)}} \sum_{y_i=G}^N w_i^{(m)}}\\
+\beta_m &= \frac{1}{2} \log \frac{1 - \frac{\sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{i=1}^N w_i^{(m)}}}{\frac{\sum_{y_i=G}^N w_i^{(m)}}{\sum_{i=1}^N w_i^{(m)}}}\\
+\intertext{Now we can expand the summation $\sum_{y_i=G}$ in the fraction:}
+\beta_m &= \frac{1}{2} \log \frac{1 - \frac{\sum_{i=1}^N w_i^{(m)} I(y_i \neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}}{\frac{\sum_{i=1}^N w_i^{(m)} I(y_i \neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}}\\
+\intertext{Finally, we substitute $\frac{\sum_{i=1}^N w_i^{(m)} I(y_i \neq G_m(x_i))}{\sum_{i=1}^N w_i^{(m)}}$ back for the definition in (2):}
+\beta_m &= \frac{1}{2} \log \frac{1-\text{err}_m}{\text{err}_m}
+\end{align}
 
 \section*{2}
 
