@@ -34,12 +34,12 @@ def experiment_depth():
 
 
 def experiment_surf(max_depth=100, max_trees=50):
-    forest_sizes = np.arange(1, max_trees+1)
-    depths = np.arange(1, max_depth+1)
+    forest_sizes = np.arange(1, max_trees + 1)
+    depths = np.arange(1, max_depth + 1)
 
     X, y = datasets.load_digits(return_X_y=True)
 
-    X = X/16
+    X = X / 16
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
 
@@ -62,29 +62,30 @@ def experiment_surf(max_depth=100, max_trees=50):
 
 
 def gridSearch():
-    #parameters
-    n_estimators = [1,10, 20, 30, 40]
+    # parameters
+    n_estimators = [1, 10, 20, 30, 40]
     max_depth = [1, 2, 5, 10, 100, None]
     max_features = [None, 'sqrt', 'log2']
 
     random_grid = {'n_estimators': n_estimators, 'max_depth': max_depth, 'max_features': max_features}
-    
+
     X, y = datasets.load_digits(return_X_y=True)
 
     X = X / 16
-    
-    x_train, x_test, y_train, y_test = train_test_split(X,y,test_size=0.1)
-   
-    #random forest
+
+    x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.1)
+
+    # random forest
     rf = RandomForestClassifier()
 
-    grid_search = GridSearchCV(estimator = rf, param_grid = random_grid, cv=3, verbose=2)
+    grid_search = GridSearchCV(estimator=rf, param_grid=random_grid, cv=3, verbose=2)
 
     clf = grid_search.fit(x_train, y_train)
 
     param = grid_search.best_params_
     print(param)
     print(clf.score(x_test, y_test))
+
 
 if __name__ == "__main__":
     experiment_surf(max_depth=20, max_trees=10)

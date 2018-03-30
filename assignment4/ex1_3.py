@@ -1,5 +1,4 @@
 import numpy as np
-from collections import Counter
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
@@ -41,7 +40,7 @@ def main():
     Ns = [2, 5, 10, 50, 100, 1000]
 
     plt.figure()
-    for N in tqdm(Ns)
+    for N in tqdm(Ns):
         plt.plot(bagging_left_out(N), label="N = {}; exact = {:.2f}".format(N, formula(N)))
     plt.legend()
     plt.show()

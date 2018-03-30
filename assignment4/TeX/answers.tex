@@ -38,7 +38,7 @@
 \subsection{}
 The general formula is 
 \[
-	P(\text{correct predictions} > c/2) \sum_{i = \floor{n/2}}^{n} p^{i}  (1-p)^{n-i}  \binom{n}{i}.
+	P(\text{correct predictions with majority voting}) = \sum_{i = \floor{c/2}}^{c} p^{i} (1-p)^{c-i}  \binom{c}{i}.
 \]
 
 Using this formula, we find a probability of about $0.826$.
@@ -91,7 +91,7 @@ The formula for the percentage of items that are not in a sample using Bootstrap
 \]
 We also made simulations which approximate this function, as found in figure \ref{fig:approx_vs_real}. Here we see that our simulations approximate our formula. Which adds evidence to its correctness.
 
-Now that we have this implementation, we can also make simulations for different $N$. The results for this are shown in figure \ref{fig:leftout}. Here we can see the comparisons for different $N$. We see that the probability of items that do not occur converge to $0.37$ for larger $N$. The last thing we can note is that there appears to be an exponential relation to the probability and $N$ as the probability first rapidly increases to $0.25$ for $N = 2$ and at $N=5$ it is almost at convergence.
+Now that we have this implementation, we can also make simulations for different $N$. The results for this are shown in figure \ref{fig:leftout}. Here we can see a comparisons for choosing different values for $N$. We see that the probability of items that do not occur converge to $0.37$ for larger $N$. The last thing we can note is that there appears to be an exponential relation to the probability and $N$ as the probability first rapidly increases to $0.25$ for $N = 2$ and at $N=5$ it is almost at convergence.
 
 \begin{figure}[H]
 	\centering
@@ -133,7 +133,7 @@ We used the standard \texttt{RandomForestClassifier} from the python module \tex
 What we can note from this figure, is that both parameters converge. The default value for \textit{n\_estimators} is $10$. This value is roughly the value for which the algorithm converges. The default value for \textit{max\_depth} is not set, i.e. it expands until all leaves are pure or contain less than 2 samples. To better see whether setting this value is helpful, we can examine the results for certain values of the \textit{max\_depth} while leaving the parameter \textit{n\_estimators} to the default value. The results may be found in figure \ref{fig:mnist_lines}. What we can observe is that for a max tree depth of $1$ or $2$ the RandomForestClassifier is already way above chance, being $0.1$. The performance peaks at a max tree depth of 10. After this it starts to decline. This is because the tree is overfitting on the training set, which is an easy pitfall of this type of classifier. However, since it is an ensemble, the damage of overfitting is limited.
 If we increase the max\_features, we supposed to have a better performance. However, if we used to much features, this will decrease the diversity of individual tree and we want don't want dependence between trees to have l tree in order to have better performance. 
 
-To test different combination of parameters, we use the Grid Search. We obtain a score around 0.96 with using the logarithm function for the max\_features, 100 for the max\_depth and 40 for the n\_estimators.
+To test different combination of parameters, we use the Grid Search. We obtain a score around 0.96. The best found parameters are while using logarithm function to calculate how many features should be covered, a max\_depth of 20 and 50 for the n\_estimators. These results can also be observed in figure \ref{fig:mnist_results} and \ref{fig:mnist_lines}, where more trees lead to a more stable accuracy and the max\_depth decreases for higher maximum depths.
 
 Conclusion, setting the parameter \textit{n\_estimators} might not be necessary, depending on the domain. However, more estimators lead to more stable predictions. The parameter \textit{max\_depth} however, should be carefully set, as it has the most effect on the mean accuracy of the RandomForestClassifier.
 
@@ -191,7 +191,7 @@ e^{2\beta_m} &= \frac{\sum_{y_i \neq G}^N w_i^{(m)}}{\sum_{y_i=G}^N w_i^{(m)}}\\
 \end{figure}
 As the error goes to 0, the weight goes to infinity. When the error increases to 0.5, the weight of the learner slowly goes to 0, since a learner with a 0.5 error rate doesn't tell us anything about the data. 
 
-If the error increases even further, $err>0.5$, the weight goes negative. This makes sense, because the truth is the opposite of the prediction of the classifier. We can use that to make our ensemble better.
+If the error increases even further, $err>0.5$, the weight goes negative. This makes sense, because the truth is the opposite of the prediction of the classifier. We can use these results to improve our ensemble method.
 
 If the learners are weak learners, the weight will be between 0 and 1.
 
@@ -199,42 +199,37 @@ If the learners are weak learners, the weight will be between 0 and 1.
 
 In bagging we train multiple learners by sampling from the dataset with replacement. We combine them by, for example, taking the average decision, or using a majority vote.
 
-In boosting, we also train multiple learners. But we use the learners to weight the samples from the dataset, such that samples that we predict wrong early on, get a higher wait. We combine the learners similarly to the boosting case, but we weight them according to their results on the training set.
+In boosting, we also train multiple learners, but use the learners to weight the samples from the dataset, such that samples that we predict wrong early on, get a higher weight. We combine the learners similarly to the boosting case, but we weight them according to their results on the training set.
 
 \section*{4}
-Both methods train multiple classifiers, using the results of the intermediate classifiers to somehow measure the importance of each sample. They then both give importance to the difficult instances.
-
-A difference between them is how they do that.
+Both methods train multiple classifiers, using the results of the intermediate classifiers to measure the importance of each sample. They then both give importance to the difficult instances. How this is done, sets Adaboost and Gradient Boosting apart.
 
 \section*{5}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.6\textwidth]{images/ex2_5_depth_estimators}
-	\caption{}
+	\caption{Adaboost using DecisionTreeClassifiers of varying depths. The accuracy is plotted as a function of the number of estimators (Trees) in the classifier.}
+	\label{fig:acc_vs_ests}
 \end{figure}
-We used the same dataset as in the last exercise, because we want to compare the results. We used the sklearn implementation of the AdaBoostClassifier, combined with a DecisionTreeClassifier.  We used  $max\_features=\log_2$ for the decision tree.
+We used the same dataset as in the last exercise, because we want to compare the results. We used the sklearn implementation of the AdaBoostClassifier, combined with a DecisionTreeClassifier.  We used  $\texttt{max\_features}=\log_2$ for the decision tree.
 
-
-Since AdaBoost is designed to use weak learners and combine them into a strong learner, we wanted to see how the strength of the individual learner influenced the strength of the combined learner. So we plotted the accuracy against the number of estimators, for 5 different decision trees, each with a higher allowed depth (increasing the strength of the learner). 
+Since AdaBoost is designed to use weak learners and combine them into a strong learner, we wanted to see how the strength of the individual learner influenced the strength of the combined learner. So we plotted the accuracy against the number of estimators \ref{fig:acc_vs_ests}, for 5 different decision trees, each with a higher allowed depth (increasing the strength of the learner). 
 
 We can see that even the weakest possible learner manages to get an accuracy of around 0.8, although it needs many more estimators than the other learners to achieve this result. This shows us that the AdaBoost algorithm really manages to \emph{boost} the learners! Further we can see that having a stronger learner does improve the results.
 
 If we look at the number of estimators, we can see that generally the improvement in accuracy is really high for the first 10 to 20, but after that they tend to plateau.
 
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.6\textwidth]{images/ex2_5_lr_estimators}
-	\caption{}
-	\label{fig:lr}
-\end{figure}
-
-
-
 If we look at the learning rate in figure \ref{fig:lr}, we can see that the accuracy decreases really fast as it becomes larger. There is a big difference between the classifiers with a different number of estimators. The accuracy of the smallest classifier, with 10 estimators, goes down really fast. This is because the first estimator gives weights to `important' samples, but it might give high weights to samples that are not that important. Deteriorating the accuracy of the meta-classifier.
 This effect is less strong when we have more estimators, because the later estimators can correct this result.
 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.6\textwidth]{images/ex2_5_lr_estimators.eps}
+	\caption{Adaboost with Decision Tree Classifiers with a varying number of estimators. The accuracy is plotted as a function of the learning rate.}
+	\label{fig:lr}
+\end{figure}
 
 
 
