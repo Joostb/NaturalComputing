@@ -25,20 +25,34 @@ The candidate ESS's are the NE's, so both <S,S> and <H,H> are candidates. They b
 
 b) Here, only the state <S,S> is a strict Nash equilibrium. The state <H,H> is a Nash equilibrium, since for both players, the best response to H has 0 payoff, although this payoff is gained by choosing either one of S or H. 
 
-The other states are not Nash equilibria, since the response to S should always be S (for both players, because of the symmetry of the game).
+The other states are not Nash equilibria, since the response to S should always be S (for both players, because of the symmetry of the game). <S,S> is also an ESS because $P(S,S) = 1 > 0 = P(H,S)$.  
 
-c) In this game the only Nash equilibrium is <S,S>. The player changing to H will lose 1, so this is not the best response.
+c) In this game the only Nash equilibrium is <S,S>. The player changing to H will lose 1, so this is not the best response. And there is no ESS because $P(S,S) = 0 <  1 = P(H,S)$ and $P(H,H) = -20$ is the lowest value, so none of the condition is correct in order to be an ESS. 
 
-d)
+d) % TODO : add more explanations with the relation between Nash equilibria and ESS.  
 
 
 %  0,0   -1, 1
 %  1,-1, -2,-2
 
-d)
-
 
 \section{}
+
+a) The ESSs of this game are <A,A> and <B,B> because $P(A,A) = 3 > 0 = P(B,A)$ and $P(B,B) = 1 > 0 = P(A,B)$.
+
+b) A two-player game with strategies A,B and payoffs :  $\pi(A,A) = 3 $, $\pi(A,B) = 0 $, $\pi(B, A) = 0 $, $\pi(B,B) = 1 $ and $x = $ proportion of individuals using A.  
+\newline i. The expected payoff are the following : 
+\begin{itemize}
+	\item $\pi(A,x) = 3x $
+	\item $\pi(A,B) = 1-x$
+\end{itemize}
+ii. $\dot{x} = x(1-x)(\pi(A,x)-\pi(B,x))$
+$\dot{x} = x(1-x)(3x-(1-x))$
+$\dot{x}= x(1-x)(4x-1)$
+\newline iii. Fixed point $x* = 0$, $x* = 1$, $x* = 1/4$
+\newline iv.  $x* = 1$, $x* = 0$ are the evolutionary end points because everyone uses strategy A or strategy B respectively. For  $x* = 1/4$, this is not stable. If there is more A, so the A replicate more fast than the B and in the other way, if there is more B, even if A has a bigger paidoff, the B replicate faster than the A.
+
+
 
 
 \end{document}
