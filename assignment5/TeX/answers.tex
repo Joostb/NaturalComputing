@@ -99,5 +99,14 @@ The two rules, since the black-white-black doesn't occur, both rules generate th
 \substack{\square \square \square \\ \square}
 \]
 
+\section{}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/q6.PNG}
+	\caption{Small Exploder with a stable state.}
+\end{figure}
+This figure is static because for the space that is 'populated', all of the cell have exactly 2 neighbords, so when we apply the rule "Each cell with two or three neighbors survives", they survive with the same disposition.
+Concerning the space that is 'unpopulated', the maximum number of neighbords is less than 3, so by applying the rules, these cells stay empty. 
+So when this configuration appears, it gets stuck in because the "old" cells survive and none of the other cells become populated. 
 
 \end{document}
