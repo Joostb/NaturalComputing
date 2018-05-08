@@ -33,10 +33,10 @@ function data = load_dataset(data, features, preprocessing)
   
   % We assume that the data directory is located relative to the script
   datadir.base = 'data';
-  datadir.ocvgg = '~/data/office-caltech';
-  datadir.ovgg = '~/data/office31/vgg';
+  datadir.ocvgg = 'data/office-caltech';
+  datadir.ovgg = 'data/office31/vgg';
   datadir.decaf = '../data/';
-  datadir.deep = '~/data/domain-adaptation';
+  datadir.deep = 'data/domain-adaptation';
   datadir.cdt = '../data/';
   
   if ~isstruct(data)

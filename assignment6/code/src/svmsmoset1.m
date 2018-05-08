@@ -1,4 +1,4 @@
-function options = svmsmoset(varargin)
+function options = svmsmoset1(varargin)
 %SVMSMOSET Obsolete function.
 %   SVMSMOSET will be removed in a future release. Use FITCSVM instead.
 %   

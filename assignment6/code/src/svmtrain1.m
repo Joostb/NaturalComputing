@@ -367,7 +367,7 @@ cleanupObj = onCleanup(@() warning('on','stats:obsolete:ReplaceThisWith'));
 if ~isempty(smoOptsInput) && isempty(tolkkt) && isempty(kktvl) ...
         && isempty(kerCL) && isempty(opts)
     %back-compatibility.
-    smo_opts = svmsmoset(smoOptsInput);
+    smo_opts = svmsmoset1(smoOptsInput);
 else
     if isempty(tolkkt)
         tolkkt = 1e-3;
@@ -378,7 +378,7 @@ else
     if isempty(kktvl)
         kktvl = 0;
     end
-    smo_opts = svmsmoset(smo_opts,'tolkkt',tolkkt,'KernelCacheLimit',kerCL,....
+    smo_opts = svmsmoset1(smo_opts,'tolkkt',tolkkt,'KernelCacheLimit',kerCL,....
         'KKTViolationLevel',kktvl);
 end
 

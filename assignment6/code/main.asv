@@ -33,4 +33,4 @@ boxplot(results)
 xlabel('Percentage')
 ylabel('Accuracy')
 xticklabels({'10', '20', '40', '60'})
-saveas(gcf, 'adrem_results.png')
+savefig
