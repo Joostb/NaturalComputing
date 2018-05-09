@@ -4,13 +4,13 @@ data = load_dataset('office-caltech', 'surf');
 % Predict labels of 'dvd' target domain using 'books' as source
 % Preprocess data: divide by standard deviation over both domains
 results = zeros(5,4);
-precentage = [10, 20, 40, 60];
+percentage = [10, 20, 40, 60];
 
 for p = 1:4
     for i = 1:5 
         idx = randperm(length(data.x{2}));
-        indexToGroup1 = (idx <= length(data.x{2})/100*precentage(p));
-        indexToGroup2 = (idx > length(data.x{2})/100*precentage(p));
+        indexToGroup1 = (idx <= length(data.x{2})/100*percentage(p));
+        indexToGroup2 = (idx > length(data.x{2})/100*percentage(p));
         group1 = data.x{2}(indexToGroup1, :);
         group2 = data.x{2}(indexToGroup2, :);
         label1 = data.y{2}(indexToGroup1, :);

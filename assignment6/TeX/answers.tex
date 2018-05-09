@@ -49,13 +49,22 @@ This difference might be accounted to the number of features that are created fo
 \section{Experiment}
 
 \subsection{SURF}
-For the experiment we randomly selected a percentage $p$ of the labeled target-data for each class. Each experiment was repeated 10 times. The results may be seen in figure \ref{fig:adrem_results}. What we can see from this boxplot is that using more labeled data increases the accuracy. Which is to be expected, following the ``more data is better'' ideology. 
+For the experiment we randomly selected a percentage $p$ of the labeled target-data for each class. Each experiment was repeated 10 times. The results may be seen in figure \ref{fig:adrem_results_surf}. What we can see from this boxplot is that using more labeled data increases the accuracy. Which is to be expected, following the ``more data is better'' ideology. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\textwidth]{images/adrem_results.png}
+	\includegraphics[width=0.7\textwidth]{images/adrem_results_surf.png}
 	\caption{Boxplot of the results for Ad-REM on the SURF dataset.}
-	\label{fig:adrem_results}
+	\label{fig:adrem_results_surf}
 \end{figure}
 
+\subsection{VGG}
+We also do the same experimentation with the VGG dataset. We can conclude the same that using more labeled data increases the accuracy. Which is to be expected, following the ``more data is better'' ideology. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{images/adrem_results_vgg.png}
+	\caption{Boxplot of the results for Ad-REM on the VGG  dataset.}
+	\label{fig:adrem_results_vgg}
+\end{figure}
 \end{document}
